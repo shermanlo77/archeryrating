@@ -1,0 +1,14 @@
+<!--
+GNU General Public License v3.0
+Copyright (c) 2019-2020 Sherman Lo
+-->
+---
+title: "`r event`"
+output: html_document
+---
+[←home](../index.html)<br>
+
+## `r categoryBowtype` `r format`
+```{r, echo=FALSE}
+knitr::kable(kable);
+```
