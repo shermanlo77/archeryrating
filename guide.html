@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Archery Rating</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}</style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+  </head>
+
+  <body class="w3-light-grey">
+    <div class="w3-main">
+      <header class="w3-container" style="padding-top:22px">
+        <h1>Archery Rating - Guide</h1>
+        <form style="display: inline" action="./index.html" method="get"><button class="w3-button w3-blue">Home <i class="fa fa-arrow-right"></i></button></form><p>
+      </header>
+
+      <div class="w3-container">
+        <h2>Short Summary</h2>
+        <p>
+          Points are earned based on who you win and lose to in both the WA 720 and matchplay
+          events. In addition, your points are adjusted according to your opponents' future
+          performances.
+        </p>
+      </div>
+
+      <div class="w3-container">
+        <h2>Summary</h2>
+        <p>
+          The Plackett-Luce ranking is based on pairwise comparisons, who you win and lose against
+          to. Each archer starts with 1440 points (to try and be similar to the handicap score in
+          the UK). Each archer wins and lose points based on who they win and lose to, but also
+          based on their opponents’ future performance.
+        </p>
+        <p>
+          The points are updated to reflect the statistical property of each archer. More
+          specifically, it estimates the probability that you will beat an archer in a format where
+          it is either matchplay or a WA 720 chosen at random. The formula for the probability that
+          archer A beats archer B is
+          \[
+          P(\text{A beats B}) = \dfrac{1}{1+10^{(R_B-R_A)/400}}
+          \]
+          where \(R_A\) and \(R_B\) are the points for archer A and archer B respectively
+        </p>
+        <p>
+          This has numerous advantages over previous ranking systems. Score based ranking systems
+          (add up your best 5 scores) do not take into consideration bad weather scores because they
+          are typically low and are not used. Position based ranking systems do not take into
+          account the playing field, the 1st place in a competition may be more meaningful compared
+          to the 1st place in another competition
+        </p>
+        <p>
+          The Plackett-Luce ranking system overcomes these problems by using pairwise comparisons.
+          In bad weather, it is who you beat which matters, not your score. In tournaments of
+          different scales, you are rewarded or punished depending on who you win or lose against to
+          which takes into account the playing field. A disadvantage of this ranking system is that
+          it is complicated compared to previous ranking systems. It is not very clear how you can
+          improve your rank impart from beating archers who are ranked higher than you.
+        </p>
+        <p>
+          The method uses the maximum likelihood. This means that points will fluctuate rapidly at
+          first but steadies out as more and more archery events are attended. This is similar to
+          estimating the probability of a coin flip landing heads. With one coin flip, your estimate
+          is either 0% or 100%, but with more and more coin flips your estimate will almost surely
+          be 50%. Therefore, to exploit this ranking method, win against the best archer once and
+          stop playing.
+        </p>
+        <p>
+          To tackle this, the uncertainty has been provided which quantifies the possible
+          fluctuation in estimation. A smaller uncertainty suggests that archer has competed in more
+          events.
+        </p>
+        <p>
+          Similar ranking systems include the Elo rating system (used in chess) and the
+          Bradley–Terry model. However, it should be noted that the number of tournaments an archer
+          enters is significantly fewer compared to, for example, the number of matches a chess
+          player plays online. Ranking systems should be developed and tuned to the game/sport used
+          for.
+        </p>
+
+      </div>
+
+      <div class="w3-container">
+        <h2>References and Acknowledgement</h2>
+        <ul>
+          <li><a href="https://link.springer.com/article/10.1007/s00180-020-00959-3">Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I., 2020. Modelling rankings in R: the PlackettLuce package. <i>Computational Statistics</i>, pp.1-31.</a></li>
+          <li>The results were extracted from <a href="https://www.ianseo.net">Ianseo</a> with the help from Tony Sze.</li>
+          <li>Helpful discussions with students and academic staff at the University of Warwick.</li>
+        <ul>
+      </div>
+
+      <div class="w3-container w3-dark-grey w3-padding-32">
+        <div class="w3-row">
+          GPL-3.0 License
+          <br>
+          <a href="https://github.com/shermanlo77/archeryrating">Github: https://github.com/shermanlo77/archeryrating</a>
+       </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -22,6 +22,7 @@ library(foreach);
 library(doParallel);
 
 source('cleannames.R');
+source('renderHtml.R');
 
 #PROCEDURE: ARCHERY RATING HTML
 #Process the provided .csv files from IanseoParse and create a website containing the plackett luce
@@ -41,7 +42,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
   registerDoParallel(detectCores());
 
   #homepage variables
-  categoryBowtypeArray = c(); #list of category and bowtypes, in full text format (eg Men's Recurve)
+  categoryBowtypeLink = c(); #list of category and bowtypes, in full text format (eg Men's Recurve)
   #list of events
     #dim 1: for each event
     #dim 2: event name, format, list of categories and links (in categoryBowtypeCode format)
@@ -148,13 +149,14 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
 
           #link to this event page
           eventPointer = (eventArrayMatrix[,1] == event) & (eventArrayMatrix[,2] == format);
-          link = convertEventToMarkdown(categoryBowtypeCode, categoryBowtypeCode,
-              matrix(c(eventNumber, isQualification),ncol=2), '');
+          link = getEventHtml(categoryBowtypeCode,
+                              matrix(c(eventNumber, isQualification),ncol=2), '');
+          button = linkToButton(categoryBowtypeCode, link);
           if (!any(eventPointer)){
-            eventArrayMatrix = rbind(c(event, format, link), eventArrayMatrix);
+            eventArrayMatrix = rbind(c(event, format, button), eventArrayMatrix);
           } else {
             eventArrayMatrix[which(eventPointer),3] = paste(eventArrayMatrix[which(eventPointer),3],
-                link);
+                                                            button);
           }
         }
       }
@@ -231,8 +233,8 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
         }
         outputFile = file.path(htmlPath, as.character(eventNumber), outputFile);
         kable = eventArray[[iEvent]][[2]];
-        kable$Name = convertNameToMarkdown(kable$Name, paste0('../',categoryBowtypeCode,'/'));
-        render('eventTemplate.rmd', output_file = outputFile);
+        kable$Name = convertNameToHtml(kable$Name, paste0('../',categoryBowtypeCode,'/'));
+        renderEvent(event, categoryBowtype, format, kable, outputFile);
       }
 
       #save the rank matrix and plackettLuce model
@@ -260,14 +262,13 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
       kable[,3] = countryArray[names(points)];
       kable[,4] = round(points);
       kable[,5] = paste0('±',quasiError[names(points)]);
-      kable[,2] = convertNameToMarkdown(kable[,2], paste0(categoryBowtypeCode,'/'));
+      kable[,2] = convertNameToHtml(kable[,2], paste0(categoryBowtypeCode,'/'));
       colnames(kable) = c('Rank','Name','Country','Points','Uncertainty');
-      render('rankTemplate.rmd',
-          output_file = file.path(htmlPath, paste0(categoryBowtypeCode,'.html')));
+      renderRank(categoryBowtype, kable,
+                 file.path(htmlPath, paste0(categoryBowtypeCode,'.html')));
 
       #link the homepage to this
-      categoryBowtypeArray = c(categoryBowtypeArray,
-          paste0('[',categoryBowtype,'](',categoryBowtypeCode,'.html)') );
+      categoryBowtypeLink = c(categoryBowtypeLink, paste0(categoryBowtypeCode, '.html'));
 
       #for each archer, knit a table
       for (iArcher in 1:length(points)) {
@@ -342,7 +343,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
             TRUE);
           eventName = eventArray[[eventArrayPointer]][[1]];
           eventName = substr(eventName,1,regexpr('<br>',eventName)[1]-1);
-          eventName = convertEventToMarkdown(eventName, categoryBowtypeCode,
+          eventName = convertEventToHtml(eventName, categoryBowtypeCode,
               matrix(c(eventNumber, isQualification),ncol=2), '../');
           #get the list of ranks for each archer
           eventRank = archerRankMatrix[iEvent,archerRankMatrix[iEvent,]>0];
@@ -384,19 +385,19 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
         colnames(kable2) = c('Event','Format','VS','Country',"Opponent's points now", 'Result');
 
         #add links to kable
-        kable[,2] = convertEventToMarkdown(kable[,2], categoryBowtypeCode,
+        kable[,2] = convertEventToHtml(kable[,2], categoryBowtypeCode,
             matrix(apply(eventNumberArray,2,rev),ncol=2), '../');
-        kable2[,3] = convertNameToMarkdown(kable2[,3],'');
+        kable2[,3] = convertNameToHtml(kable2[,3],'');
 
         outputFile = nameToHtml(archer);
         outputFile = file.path(htmlPath, categoryBowtypeCode, paste0(outputFile,'.html'));
-        render('individualTemplate.rmd', output_file = outputFile);
+        renderIndividual(archer, country, categoryBowtype, archerRank, archerPoints, kable,
+                         kable2, outputFile);
       }
     }
   }
 
-  render('homepage.rmd', output_file = file.path(htmlPath, 'index.html'));
-  render('guide.rmd', output_file = file.path(htmlPath, 'guide.html'));
+  renderHomepage(title, categoryBowtypeLink, eventArrayMatrix, file.path(htmlPath, 'index.html'));
 }
 
 #FUNCTION: COMBINE RANK MATRIX
@@ -534,20 +535,20 @@ nameToHtml = function(name) {
   return(name);
 }
 
-#FUNCTION: CONVERT NAME TO MARKDOWN
-#Add a link to the name of archers in markdown format
+#FUNCTION: CONVERT NAME TO HTML
+#Add a link to the name of archers in HTML format
 #PARAMETERS:
   #name: vector of names
   #prefixToLink: path to where the individual archer's pages are stored
 #RETURN;
-  #vector of names in markdown format
-convertNameToMarkdown = function(name, prefixToLink) {
-  name = paste0('[',name,'](',prefixToLink,nameToHtml(name),'.html)');
+  #vector of names in HTML format
+convertNameToHtml = function(name, prefixToLink) {
+  name = paste0('<a href="', prefixToLink, nameToHtml(name), '.html">', name, '</a>');
   return(name);
 }
 
-#FUNCTION: CONVERT EVENT TO MARKDOWN
-#Add a link to events
+#FUNCTION: CONVERT EVENT TO HTML
+#For a given event and bow category, return <a> with url link for that event page
 #PARAMETERS:
   #eventName: vector of event names
   #categoryBowtypeCode
@@ -556,16 +557,20 @@ convertNameToMarkdown = function(name, prefixToLink) {
     #dim 2: eventNumber, isQualification
   #prefixToLink: path to where the event directory is
 #RETURN:
-  #vector of event names in markdown format
-convertEventToMarkdown = function(eventName, categoryBowtypeCode, eventNumberArray, prefixToLink) {
+  #vector of event names in HTML format
+convertEventToHtml = function(eventName, categoryBowtypeCode, eventNumberArray, prefixToLink) {
+  eventUrl = getEventHtml(categoryBowtypeCode, eventNumberArray, prefixToLink)
+  eventHtml = paste0('<a href="', eventUrl, '">', eventName, '</a>');
+  return(eventHtml);
+}
 
+#FUNCTION: GET EVENT HTML
+#For a given event and bow category, return url link for that event page
+getEventHtml = function(categoryBowtypeCode, eventNumberArray, prefixToLink) {
   htmlFile = eventNumberArray[,2];
   eventNumber = eventNumberArray[,1];
-
   htmlFile[htmlFile==1] = 'IQ';
   htmlFile[htmlFile==0] = 'IF';
-
-  eventName = paste0('[',eventName,'](',prefixToLink,eventNumber,'/',htmlFile,categoryBowtypeCode,
-      '.html)');
-  return(eventName);
+  url = paste0(prefixToLink, eventNumber, '/', htmlFile, categoryBowtypeCode, '.html');
+  return(url);
 }
