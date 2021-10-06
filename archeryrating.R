@@ -543,7 +543,8 @@ nameToHtml = function(name) {
 #RETURN;
   #vector of names in HTML format
 convertNameToHtml = function(name, prefixToLink) {
-  name = paste0('<a href="', prefixToLink, nameToHtml(name), '.html">', name, '</a>');
+  name = paste0('<a href="', prefixToLink, nameToHtml(name), '.html">', name,
+                ' <i class="fa fa-arrow-right"></i></a>');
   return(name);
 }
 
@@ -560,7 +561,8 @@ convertNameToHtml = function(name, prefixToLink) {
   #vector of event names in HTML format
 convertEventToHtml = function(eventName, categoryBowtypeCode, eventNumberArray, prefixToLink) {
   eventUrl = getEventHtml(categoryBowtypeCode, eventNumberArray, prefixToLink)
-  eventHtml = paste0('<a href="', eventUrl, '">', eventName, '</a>');
+  eventHtml = paste0('<a href="', eventUrl, '">', eventName,
+                     ' <i class="fa fa-arrow-right"></i></a>');
   return(eventHtml);
 }
 

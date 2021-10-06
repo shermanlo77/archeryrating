@@ -1,15 +1,12 @@
 # Archery Rating (Using PlackettLuce)
 
-- Copyright (c) 2019-2020 Sherman Lo. See `LICENSE` for further information.
+Extract recurve and compound event scores from [Ianseo](https://ianseo.net/) and builds a website containing the resulting ranks of all archers. The statistical analysis was written in *R*, using the [PlackettLuce](https://hturner.github.io/PlackettLuce/) package.
 
-Extract recurve and compound event scores from [Ianseo](https://ianseo.net/) and builds a website containing the resulting ranks of all archers. The statistical analysis was written in *R*, using the [PlackettLuce](https://hturner.github.io/PlackettLuce/) package. The *HTML* websites were built using *R Markdown*
+The extraction of scores from Ianseo was done using [IanseoParse](https://github.com/Alcalol/IanseoParse). This was written in *Java* and is a submodule of this repository.
 
-The extraction of scores from Ianseo was done using IanseoParse [(GitHub)](https://github.com/Alcalol/IanseoParse). This was written in *Java* and is a submodule of this repository.
+Contribution, using or forking this repository is welcomed. I work on this in my spare time and I am a novice in *R*. I may be available for further calibration, please find my contact details on my [GitHub profile](https://github.com/shermanlo77). Please see `LICENSE` and cite any forthcoming publications where appropriate.
 
-Contribution, using or forking this repository is welcomed. I work on this in my spare time and I am a novice in *R*. Please see `LICENSE` and cite any forthcoming publications where appropriate.
-
-## Example: [World Archery 2019](https://shermanlo77.github.io/archery_rating/)
-## Example: [UK 2019](https://shermanlo77.github.io/archery_rating_2019/)
+## [Main Website](https://shermanlo77.github.io/archeryratingweb/)
 
 ## How to Use (Linux Recommended)
 - Compile the *Java* code using *Maven*, for example using
@@ -44,11 +41,25 @@ The Plackett-Luce ranking system overcomes these problems by using pairwise comp
 
 The method uses the maximum likelihood. This means that points will fluctuate rapidly at first but steadies out as more and more archery events are attended. This is similar to estimating the probability of a coin flip landing heads. With one coin flip, your estimate is either 0% or 100%, but with more and more coin flips your estimate will almost surely be 50%. Therefore, to exploit this ranking method, win against the best archer once and stop playing.
 
-To tackle this, the uncertainty has been provided which quantifies the possible fluctuation in estimation. A smaller uncertainty suggests that archer has competed in more events.
+To tackle this, uncertainty has been provided which quantifies the possible fluctuation in estimation. A smaller uncertainty suggests that the archer has competed in more events.
 
-The results were extracted from [Ianseo](https://www.ianseo.net) with the help from Tony Sze. The [PlackettLuce](https://hturner.github.io/PlackettLuce/) package in R was used with help from students and academic staff at the University of Warwick [(Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I. (2018). Modelling rankings in R: The PlackettLuce package. arXiv:1810.12068)](https://arxiv.org/abs/1810.12068).
+Similar ranking systems include the Elo rating system (used in chess) and the Bradley–Terry model. However, it should be noted that the number of tournaments an archer enters is significantly fewer compared to, for example, the number of matches a chess player plays online. Ranking systems should be developed and tuned to the game/sport used.
+
+## References and Acknowledgement
+
+<ul>
+  <li><a href="https://link.springer.com/article/10.1007/s00180-020-00959-3">Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I., 2020. Modelling rankings in R: The PlackettLuce package. <i>Computational Statistics</i>, pp.1-31.</a></li>
+  <li>The results were extracted from <a href="https://www.ianseo.net"></a> with the help from Tony Sze using <a href="https://github.com/Alcalol/IanseoParse">IanseoParse</a>.</li>
+  <li>Helpful discussions with students and academic staff at the University of Warwick.</li>
+</ul>
 
 ## Issues
+
 - Variation on names including typos, for example Chris and Christopher, are treated as different people. For the WA example, the names are cleaned in `cleannames.R`. Otherwise, it is a matter of data cleaning.
 - Two different people with the same name may have their results merged, causing unexpected results.
 - Events must have *Final Round - Ranking* results available for it to be processable.
+
+## Licenses and Other Information
+
+- Copyright (c) 2019-2020 Sherman Lo. See `LICENSE` for further information.
+- GPL-3.0 License (it should be noted that the [PlackettLuce](https://hturner.github.io/PlackettLuce/) package uses the GPL-3.0 License too).

@@ -46,7 +46,7 @@ header = function(title, nUpToCss=0) {
 
 #FUNCTION: END
 #Return the final few lines of the html file. Used in conjunction with 
-end = function() {
+ender = function() {
   html = paste0(
       '    </div>\n',
       '  </body>\n',
@@ -118,6 +118,7 @@ tableToHtml = function(table) {
   #eventArrayMatrix: R table or matrix of events (and links) to display
   #location: where to save the html file
 renderHomepage = function(title, categoryBowtypeLink, eventArrayMatrix, location) {
+  cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
   html = paste0(
     header(title, 1),
@@ -137,7 +138,7 @@ renderHomepage = function(title, categoryBowtypeLink, eventArrayMatrix, location
     '        ', tableToHtml(eventArrayMatrix), '\n\n',
     '      </div>\n',
     footer(),
-    end()
+    ender()
   );
   writeLines(html, fileConn);
   close(fileConn);
@@ -150,6 +151,7 @@ renderHomepage = function(title, categoryBowtypeLink, eventArrayMatrix, location
   #table: R table or matrix of results (and links) to display
   #location: where to save the html file
 renderRank = function(categoryBowtype, table, location) {
+  cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
   html = paste0(
     header(categoryBowtype, 1),
@@ -162,7 +164,7 @@ renderRank = function(categoryBowtype, table, location) {
     tableToHtml(table), '\n\n',
     '      </div>\n',
     footer(),
-    end()
+    ender()
   );
   writeLines(html, fileConn);
   close(fileConn);
@@ -177,6 +179,7 @@ renderRank = function(categoryBowtype, table, location) {
   #results: R table or matrix of results (and links) to display
   #location: where to save the html file
 renderEvent = function(event, categoryBowtype, format, results, location) {
+  cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
   html = paste0(
     header(event, 2),
@@ -190,7 +193,7 @@ renderEvent = function(event, categoryBowtype, format, results, location) {
     tableToHtml(results), '\n\n',
     '      </div>\n',
     footer(),
-    end()
+    ender()
   );
   writeLines(html, fileConn);
   close(fileConn);
@@ -209,6 +212,7 @@ renderEvent = function(event, categoryBowtype, format, results, location) {
   #location: where to save the html file
 renderIndividual = function(archer, country, categoryBowtype, archerRank, archerPoints, eventTable,
                             pairwiseTable, location) {
+  cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
   title = paste(archer, '-', country);
   html = paste0(
@@ -231,7 +235,7 @@ renderIndividual = function(archer, country, categoryBowtype, archerRank, archer
     tableToHtml(pairwiseTable), '\n\n',
     '      </div>\n',
     footer(),
-    end()
+    ender()
   );
   writeLines(html, fileConn);
   close(fileConn);
