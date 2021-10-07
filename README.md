@@ -41,7 +41,7 @@ The Plackett-Luce ranking system overcomes these problems by using pairwise comp
 
 The method uses the maximum likelihood. This means that points will fluctuate rapidly at first but steadies out as more and more archery events are attended. This is similar to estimating the probability of a coin flip landing heads. With one coin flip, your estimate is either 0% or 100%, but with more and more coin flips your estimate will almost surely be 50%. Therefore, to exploit this ranking method, win against the best archer once and stop playing.
 
-To tackle this, uncertainty has been provided which quantifies the possible fluctuation in estimation. A smaller uncertainty suggests that the archer has competed in more events.
+To tackle this, uncertainty has been provided, if available, which quantifies the possible fluctuation in estimation. A smaller uncertainty suggests that the archer has competed in more events.
 
 Similar ranking systems include the Elo rating system (used in chess) and the Bradley–Terry model. However, it should be noted that the number of tournaments an archer enters is significantly fewer compared to, for example, the number of matches a chess player plays online. Ranking systems should be developed and tuned to the game/sport used.
 

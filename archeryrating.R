@@ -251,6 +251,8 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
         message("\nError in obtaining quasi error, uncertanity are omitted")
         return(rep(NA, length(points)))
       })
+      #na any uncertainity which are too large
+      quasiError[quasiError > 1000] = NA;
 
       names(quasiError) = names(points);
 
@@ -499,6 +501,8 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
     #make archer names as string
     bracket[,1] = as.character(bracket[,1]);
     bracket[,3] = as.character(bracket[,3]);
+    #keep a copy of the archers name in case Individual-Final is not available
+    namesForBackup = unique(c(bracket[,1], bracket[,3]));
     #clean the names and convert all names to lower case
     bracket[,1] = tolower(cleanNames(bracket[,1]));
     bracket[,3] = tolower(cleanNames(bracket[,3]));
@@ -507,9 +511,31 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
     file = paste(as.character(eventNumber),"-Individual_Final-",bowtype,"_",category,
         ".csv", sep = "");
     file = file.path(as.character(eventNumber), file);
-    final = read.csv(file=file, header=TRUE, sep=",");
-    final$Name = as.character(cleanNames(as.character(final$Name))); #format name column
-
+    
+    #try and read the final h2h rank, some Ianseo pages do not include it
+    if (file.exists(file)) {
+      final = read.csv(file=file, header=TRUE, sep=",");
+      final$Name = as.character(cleanNames(as.character(final$Name))); #format name column
+    } else {
+      #if the final page does not exist, fill in all information with using qualification
+      
+      file_qualification = paste(as.character(eventNumber), "-Individual_Qualification-", bowtype,
+                                 "_",category, ".csv", sep = "");
+      file_qualification = file.path(as.character(eventNumber), file_qualification);
+      qualification = read.csv(file=file_qualification, header=TRUE, sep=",");
+      #format the data frame
+      qualification$Name = cleanNames(as.character(qualification$Name));
+      
+      #final only requires rank, name, country
+      qualification = qualification[, 1:3]
+      #final position unknown, fill with na
+      qualification[, 1] = NA
+      
+      #only include qualification archers who are also in elimiation
+      final = qualification[
+          is.element(tolower(qualification$Name), tolower(namesForBackup)), ];
+    }
+  
     #make rank matrix, one row for each match
     rankMatrix = matrix(0, ncol = nrow(final), nrow = nrow(bracket));
     colnames(rankMatrix) = final$Name;
