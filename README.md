@@ -15,14 +15,14 @@ mvn -f IanseoParse package
 ```
 - Extract Ianseo scores and save them as `.csv` files. See [IanseoParse](https://github.com/Alcalol/IanseoParse) for further information. The following examples are provided:
 ```
-java -jar IanseoParse/target/IanseoParse-1.0.jar -t wa_2019.txt
+java -jar IanseoParse/target/IanseoParse-1.2.jar -t uk_2019.txt
 ```
-to extract World Archery events and
+to extract UK events for 2019
 ```
-java -jar IanseoParse/target/IanseoParse-1.0.jar -t uk_2019.txt
+java -jar IanseoParse/target/IanseoParse-1.2.jar -t uk_2021.txt
 ```
-to extract UK events.
-- For the above example, run the scripts `wa_2019.R` and `uk_2019.R` to build the respective websites. This is computationally intensive, especially if there are ties. Multiple threads and at least 16 GB of RAM is recommended.
+to extract UK events for 2021.
+- For the above example, run the scripts `uk_2019.R` and `uk_2021.R` to build the respective websites. This is computationally intensive, especially if there are ties. Multiple threads and at least 16 GB of RAM is recommended.
 - To build a website using other events, see the procedure `archeryRatingHtml()` in `archeryrating.R`.
 
 ## More Information
@@ -57,7 +57,7 @@ Similar ranking systems include the Elo rating system (used in chess) and the Br
 
 - Variation on names including typos, for example Chris and Christopher, are treated as different people. For the WA example, the names are cleaned in `cleannames.R`. Otherwise, it is a matter of data cleaning.
 - Two different people with the same name may have their results merged, causing unexpected results.
-- Events must have *Final Round - Ranking* results available for it to be processable.
+- There are issues with scaling to WA events, eg lots of ties in qualification will make the computation harder. The WA 2019 example is still in development. 
 
 ## Licenses and Other Information
 
