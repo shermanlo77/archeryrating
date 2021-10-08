@@ -91,6 +91,18 @@ linkToButton = function(text, url) {
   return(html);
 }
 
+#FUNCTION: LINK TO IANSEO
+#Returns html code for a linked button to a Ianseo page
+#PARAMETERS:
+  #eventNumber: integer
+linkToIanseo = function(eventNumber) {
+  eventNumber = as.character(eventNumber);
+  html = paste0('<form style="display: inline" action="https://www.ianseo.net/Details.php" ',
+                'method="get"><button class="w3-button w3-blue" type="submit" value="', eventNumber,
+                '" name="toId">Ianseo <i class="fa fa-arrow-right"></i></button></form>');
+  return(html);
+}
+
 #FUNCTION: TABLE TO HTML
 #Converts a table (or matrix) into a html table
 tableToHtml = function(table) {
@@ -174,11 +186,12 @@ renderRank = function(categoryBowtype, table, location) {
 #Creates and saves a html file for an event
 #PARAMETERS:
   #event: the name of the event (in full English)
+  #eventNumber: integer
   #categoryBowtype: the name of the category (in full English)
   #format: string the format (qualification, elimiation)
   #results: R table or matrix of results (and links) to display
   #location: where to save the html file
-renderEvent = function(event, categoryBowtype, format, results, location) {
+renderEvent = function(event, eventNumber, categoryBowtype, format, results, location) {
   cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
   html = paste0(
@@ -186,7 +199,8 @@ renderEvent = function(event, categoryBowtype, format, results, location) {
     '\n',
     '      <header class="w3-container" style="padding-top:22px">\n',
     '        <h1>', event, '</h1>\n',
-    '        ', linkToButton("This season", "../index.html"), '\n',
+    '        ', linkToButton("This season", "../index.html"), '<p>\n',
+    '        ', linkToIanseo(eventNumber), '\n',
     '      </header>\n',
     '      <div class="w3-container">\n',
     '        <h2>', paste0(categoryBowtype, ' - ', format), '</h2>\n',

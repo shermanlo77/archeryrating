@@ -234,7 +234,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
         outputFile = file.path(htmlPath, as.character(eventNumber), outputFile);
         kable = eventArray[[iEvent]][[2]];
         kable$Name = convertNameToHtml(kable$Name, paste0('../',categoryBowtypeCode,'/'));
-        renderEvent(event, categoryBowtype, format, kable, outputFile);
+        renderEvent(event, eventNumber, categoryBowtype, format, kable, outputFile);
       }
 
       #save the rank matrix and plackettLuce model
