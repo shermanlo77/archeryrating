@@ -1,4 +1,4 @@
-source('archeryrating.R');
+source('archeryrating.R')
 path = 'wa_2019'
 if (!file.exists(path)) {
   dir.create(path)
