@@ -448,17 +448,17 @@ getPoints = function(plackettLuce){
   #2. data from the event
 getRankRow = function(eventNumber, isQualification, bowtype, category){
 
+  #read the qualification
+  file_qualification = paste(as.character(eventNumber), "-Individual_Qualification-", bowtype,
+                             "_",category, ".csv", sep = "");
+  file_qualification = file.path(as.character(eventNumber), file_qualification);
+  qualification = read.csv(file=file_qualification, header=TRUE, sep=",");
+  #format the data frame
+  qualification$Name = cleanNames(as.character(qualification$Name));
+  
   #for a round, eg WA 720
   if (isQualification){
 
-    #get the CSV file
-    file = paste(as.character(eventNumber),"-Individual_Qualification-",bowtype,"_",category,
-        ".csv", sep = "");
-    file = file.path(as.character(eventNumber), file);
-    qualification = read.csv(file=file, header=TRUE, sep=",");
-
-    #format the data frame
-    qualification$Name = cleanNames(as.character(qualification$Name));
     #order the data frame (just in case of any ties)
     qualification = qualification[with(qualification,
         order(qualification$Score,
@@ -516,16 +516,11 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
     if (file.exists(file)) {
       final = read.csv(file=file, header=TRUE, sep=",");
       final$Name = as.character(cleanNames(as.character(final$Name))); #format name column
+      #replace final country names with country names in qualification
+      #ianseo omits full country names in brackets
+      final$Country = qualification$Country[match(final$Name, qualification$Name)]
     } else {
       #if the final page does not exist, fill in all information with using qualification
-      
-      file_qualification = paste(as.character(eventNumber), "-Individual_Qualification-", bowtype,
-                                 "_",category, ".csv", sep = "");
-      file_qualification = file.path(as.character(eventNumber), file_qualification);
-      qualification = read.csv(file=file_qualification, header=TRUE, sep=",");
-      #format the data frame
-      qualification$Name = cleanNames(as.character(qualification$Name));
-      
       #final only requires rank, name, country
       qualification = qualification[, 1:3]
       #final position unknown, fill with na
