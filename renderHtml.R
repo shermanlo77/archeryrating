@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-# 
+#
 # Contains functions and procedures for rendering HTML pages
 
 library(tableHTML);
@@ -45,12 +45,12 @@ header = function(title, nUpToCss=0) {
 }
 
 #FUNCTION: END
-#Return the final few lines of the html file. Used in conjunction with 
+#Return the final few lines of the html file. Used in conjunction with
 ender = function() {
   html = paste0(
       '    </div>\n',
       '  </body>\n',
-      '</html>\n' 
+      '</html>\n'
   );
   return(html);
 }
@@ -132,6 +132,21 @@ tableToHtml = function(table) {
 renderHomepage = function(title, categoryBowtypeLink, eventArrayMatrix, location) {
   cat(paste0("Rendering ", location, "\n"));
   fileConn = file(location);
+
+  categories = paste0(
+    '        <h2>Categories</h2>',
+    '        ', linkToButton("Men's Recurve", categoryBowtypeLink[1]), '<p>\n',
+    '        ', linkToButton("Women's Recurve", categoryBowtypeLink[2]), '<p>\n',
+    '        ', linkToButton("Men's Compound", categoryBowtypeLink[3]), '<p>\n',
+    '        ', linkToButton("Women's Compound", categoryBowtypeLink[4]), '<p>\n'
+  )
+  if (length(categoryBowtypeLink) > 4) {
+    categories = paste0(
+      categories,
+      '        ', linkToButton("Men's Barebow", categoryBowtypeLink[5]), '<p>\n',
+      '        ', linkToButton("Women's Barebow", categoryBowtypeLink[6]), '<p>\n')
+  }
+
   html = paste0(
     header(title, 1),
     '\n',
@@ -139,11 +154,7 @@ renderHomepage = function(title, categoryBowtypeLink, eventArrayMatrix, location
     '        <h1>', title, '</h1>\n',
     '        ', linkToButton("Home", '../index.html'), '<p>\n',
     '        ', linkToButton("Guide", '../guide.html'), '<p>\n',
-    '        <h2>Categories</h2>',
-    '        ', linkToButton("Men's Recurve", categoryBowtypeLink[1]), '<p>\n',
-    '        ', linkToButton("Women's Recurve", categoryBowtypeLink[2]), '<p>\n',
-    '        ', linkToButton("Men's Compound", categoryBowtypeLink[3]), '<p>\n',
-    '        ', linkToButton("Women's Compound", categoryBowtypeLink[4]), '<p>\n',
+    categories,
     '      </header>\n',
     '      <div class="w3-container">\n',
     '        <h2>Events</h2>\n',
@@ -234,7 +245,7 @@ renderIndividual = function(archer, country, categoryBowtype, archerRank, archer
     '\n',
     '      <header class="w3-container" style="padding-top:22px">\n',
     '        <h1>', title, '</h1>\n',
-    '        ', linkToButton("This season", "../index.html"), '\n', 
+    '        ', linkToButton("This season", "../index.html"), '\n',
     '      </header>\n',
     '      <div class="w3-container">\n',
     '        <h2>Rating Rank: ', archerRank,'</h2>\n',

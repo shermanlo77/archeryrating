@@ -37,7 +37,9 @@ source('renderHtml.R');
     #and should be consistent with compoundEventArray
   #htmlPath: name of directory where the html files are saved
   #tile: title to put on the home page
-archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, title) {
+archeryRatingHtml = function(recurveEventArray, compoundEventArray,
+                             htmlPath, title,
+                             barebowEventArray=NULL) {
 
   registerDoParallel(detectCores());
 
@@ -54,7 +56,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
     #dim 2: categoryBowtypeCode, rankMatrix, plackettLuce
   plackettLuceArray = list();
 
-  for (bowtype in c('Recurve', 'Compound')) {
+  for (bowtype in c('Recurve', 'Compound', 'Barebow')) {
 
     for (category in c('Men', 'Women')){
 
@@ -70,8 +72,12 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray, htmlPath, ti
       #in this implementation each event has a WA720 and bracket
       if (bowtype == 'Recurve'){
         eventNumberArray = recurveEventArray;
-      } else {
+      } else if (bowtype == 'Compound') {
         eventNumberArray = compoundEventArray;
+      } else if (!is.null(barebowEventArray)) {
+        eventNumberArray = barebowEventArray;
+      } else {
+        break;
       }
 
       #list for ranking data
@@ -455,7 +461,7 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
   qualification = read.csv(file=file_qualification, header=TRUE, sep=",");
   #format the data frame
   qualification$Name = cleanNames(as.character(qualification$Name));
-  
+
   #for a round, eg WA 720
   if (isQualification){
 
@@ -511,7 +517,7 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
     file = paste(as.character(eventNumber),"-Individual_Final-",bowtype,"_",category,
         ".csv", sep = "");
     file = file.path(as.character(eventNumber), file);
-    
+
     #try and read the final h2h rank, some Ianseo pages do not include it
     if (file.exists(file)) {
       final = read.csv(file=file, header=TRUE, sep=",");
@@ -525,12 +531,12 @@ getRankRow = function(eventNumber, isQualification, bowtype, category){
       qualification = qualification[, 1:3]
       #final position unknown, fill with na
       qualification[, 1] = NA
-      
+
       #only include qualification archers who are also in elimiation
       final = qualification[
           is.element(tolower(qualification$Name), tolower(namesForBackup)), ];
     }
-  
+
     #make rank matrix, one row for each match
     rankMatrix = matrix(0, ncol = nrow(final), nrow = nrow(bracket));
     colnames(rankMatrix) = final$Name;
