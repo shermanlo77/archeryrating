@@ -5,10 +5,16 @@ if (!file.exists(path)) {
 }
 eventArray = c(
   10337,
-  10571
+  10571,
+  10678
 )
-barebowArray = c(
+barebowMenEventArray = c(
+  10571,
+  10678
+)
+barebowWomenEventArray = c(
   10571
 )
 archeryRatingHtml(eventArray, eventArray, path, "UK Archery Rating 2022",
-                  barebowEventArray=barebowArray)
+                  barebowMenEventArray=barebowMenEventArray,
+                  barebowWomenEventArray=barebowWomenEventArray)

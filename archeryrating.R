@@ -39,7 +39,8 @@ source('renderHtml.R');
   #tile: title to put on the home page
 archeryRatingHtml = function(recurveEventArray, compoundEventArray,
                              htmlPath, title,
-                             barebowEventArray=NULL) {
+                             barebowMenEventArray=NULL,
+                             barebowWomenEventArray=NULL) {
 
   registerDoParallel(detectCores());
 
@@ -74,10 +75,18 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
         eventNumberArray = recurveEventArray;
       } else if (bowtype == 'Compound') {
         eventNumberArray = compoundEventArray;
-      } else if (!is.null(barebowEventArray)) {
-        eventNumberArray = barebowEventArray;
+      } else if (category == 'Men') {
+        if (!is.null(barebowMenEventArray)) {
+          eventNumberArray = barebowMenEventArray;
+        } else {
+          break;
+        }
       } else {
-        break;
+        if (!is.null(barebowWomenEventArray)) {
+          eventNumberArray = barebowWomenEventArray;
+        } else {
+          break;
+        }
       }
 
       #list for ranking data
