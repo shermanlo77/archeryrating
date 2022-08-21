@@ -175,7 +175,6 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
           }
         }
       }
-
       #get each unique event
       eventNumberArray = matrix(unique(rankMatrix[[2]]),ncol=2);
 
@@ -580,7 +579,7 @@ nameToHtml = function(name) {
   #vector of names in HTML format
 convertNameToHtml = function(name, prefixToLink) {
   name = paste0('<a href="', prefixToLink, nameToHtml(name), '.html">', name,
-                ' <i class="fa fa-arrow-right"></i></a>');
+                ' &#10140;</a>');
   return(name);
 }
 
@@ -598,7 +597,7 @@ convertNameToHtml = function(name, prefixToLink) {
 convertEventToHtml = function(eventName, categoryBowtypeCode, eventNumberArray, prefixToLink) {
   eventUrl = getEventHtml(categoryBowtypeCode, eventNumberArray, prefixToLink)
   eventHtml = paste0('<a href="', eventUrl, '">', eventName,
-                     ' <i class="fa fa-arrow-right"></i></a>');
+                     ' &#10140;</a>');
   return(eventHtml);
 }
 

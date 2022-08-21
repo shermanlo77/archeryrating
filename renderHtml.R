@@ -87,7 +87,7 @@ footer = function() {
 linkToButton = function(text, url) {
   html = paste0('<form style="display: inline" action="', url,
                 '" method="get"><button class="w3-button w3-blue">', text,
-                ' <i class="fa fa-arrow-right"></i></button></form>');
+                ' &#10140;</button></form>');
   return(html);
 }
 
@@ -99,7 +99,7 @@ linkToIanseo = function(eventNumber) {
   eventNumber = as.character(eventNumber);
   html = paste0('<form style="display: inline" action="https://www.ianseo.net/Details.php" ',
                 'method="get"><button class="w3-button w3-blue" type="submit" value="', eventNumber,
-                '" name="toId">Ianseo <i class="fa fa-arrow-right"></i></button></form>');
+                '" name="toId">Ianseo &#10140;</button></form>');
   return(html);
 }
 
@@ -249,7 +249,7 @@ renderIndividual = function(archer, country, categoryBowtype, archerRank, archer
     '      </header>\n',
     '      <div class="w3-container">\n',
     '        <h2>Rating Rank: ', archerRank,'</h2>\n',
-    '        <h2>Points: ', archerPoints, '</h2>\n',
+    '        <h2>Rating Points: ', archerPoints, '</h2>\n',
     '      </div>\n',
     '      <div class="w3-container">\n',
     '        <h3>Events</h3>\n',
