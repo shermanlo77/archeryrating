@@ -291,7 +291,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
         archer = names(points)[iArcher];
         country = countryArray[archer];
         ranks = rankMatrix[[1]][,archer];
-        archerPoints = round(points[archer]);
+        archerPoints = points[archer];
         archerRank = which(names(points)==archer);
 
         #list all events (group all H2H)
@@ -347,7 +347,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
         colnames(archerRankMatrix) = colnames(rankMatrix[[1]]);
         #work out the number of pairs
         nPair = sum(archerRankMatrix>0) - nrow(archerRankMatrix);
-        kable2 = matrix(nrow = nPair, ncol = 6);
+        kable2 = matrix(nrow = nPair, ncol = 7);
         iPair = 1;
         #each event
         for (iEvent in 1:nrow(archerRankMatrix)) {
@@ -387,9 +387,11 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
               } else {
                 result = 'DRAW';
               }
+              opponentPoints = points[vsName]
+              probWin = probabilityToHtml(getProbabilityWin(archerPoints, opponentPoints))
               #put results in kable2
               kable2[nPair-iPair+1,] = c(eventName, eventFormat, vsName, countryArray[vsName],
-                  round(points[vsName]), result);
+                  round(opponentPoints), probWin, result);
               iPair = iPair + 1;
             }
           }
@@ -398,7 +400,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
         #lable columns of the table
         colnames(kable) = c('Rank','Event','Format','Points after event','Points earned at event',
             'Rating rank after event');
-        colnames(kable2) = c('Event','Format','VS','Country',"Opponent's points now", 'Result');
+        colnames(kable2) = c('Event','Format','VS','Country',"Opponent's points now", 'Estimated probability of win', 'Result');
 
         #add links to kable
         kable[,2] = convertEventToHtml(kable[,2], categoryBowtypeCode,
@@ -407,7 +409,7 @@ archeryRatingHtml = function(recurveEventArray, compoundEventArray,
 
         outputFile = nameToHtml(archer);
         outputFile = file.path(htmlPath, categoryBowtypeCode, paste0(outputFile,'.html'));
-        renderIndividual(archer, country, categoryBowtype, archerRank, archerPoints, kable,
+        renderIndividual(archer, country, categoryBowtype, archerRank, round(archerPoints), kable,
                          kable2, outputFile);
       }
     }
@@ -610,4 +612,21 @@ getEventHtml = function(categoryBowtypeCode, eventNumberArray, prefixToLink) {
   htmlFile[htmlFile==0] = 'IF';
   url = paste0(prefixToLink, eventNumber, '/', htmlFile, categoryBowtypeCode, '.html');
   return(url);
+}
+
+#FUNCTION: GET PROBABILITY WIN
+getProbabilityWin = function(pointsA, pointsB) {
+  return(1 / (1 + 10^((pointsB - pointsA)/400)))
+}
+
+#FUNCTION: PRESENT PROBABILITY
+probabilityToHtml = function(prob) {
+  if (prob < 0.01) {
+    text = "&lt;1&percnt;"
+  } else if (prob > 0.99) {
+    text = "&gt;99&percnt;"
+  } else {
+    text = paste0(round(prob * 100), "&percnt;")
+  }
+  return(text)
 }
