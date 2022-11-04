@@ -1,0 +1,26 @@
+BootStrap: docker
+From: r-base
+
+%post
+    export DEBIAN_FRONTEND="noninteractive"
+    export DEBCONF_NONINTERACTIVE_SEEN=true
+    apt update
+    apt install -y libmpfr-dev
+    apt install -y git
+    cd /usr/src
+    git clone https://github.com/shermanlo77/archeryrating.git
+    cd archeryrating
+    R -e "install.packages('PlackettLuce')"
+    R -e "install.packages('readr')"
+    R -e "install.packages('stringi')"
+    R -e "install.packages('foreach')"
+    R -e "install.packages('doParallel')"
+    R -e "install.packages('tableHTML')"
+
+%environment
+    export LC_ALL=en_US.UTF-8
+    export R_LIBS_USER=""
+
+%runscript
+    cd /usr/src/archeryrating
+    Rscript example.R "$@"
