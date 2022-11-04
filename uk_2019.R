@@ -1,9 +1,9 @@
-source('archeryrating.R')
-path = 'uk_2019'
+source("archeryrating.R")
+path <- "uk_2019"
 if (!file.exists(path)) {
   dir.create(path)
 }
-eventArray = c(
+event_array <- c(
   5434,
   5049,
   5701,
@@ -21,4 +21,4 @@ eventArray = c(
   6055,
   6084
 )
-archeryRatingHtml(eventArray, eventArray, path, "UK Archery Rating 2019")
+archery_rating_html(event_array, event_array, path, "UK Archery Rating 2019")

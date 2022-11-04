@@ -1,20 +1,21 @@
-source('archeryrating.R')
-path = 'uk_2022'
+source("archeryrating.R")
+path <- "uk_2022"
 if (!file.exists(path)) {
   dir.create(path)
 }
-eventArray = c(
+event_array <- c(
   10337,
   10571,
   10678
 )
-barebowMenEventArray = c(
+barebow_men_event_array <- c(
   10571,
   10678
 )
-barebowWomenEventArray = c(
+barebow_women_event_array <- c(
   10571
 )
-archeryRatingHtml(eventArray, eventArray, path, "UK Archery Rating 2022",
-                  barebowMenEventArray=barebowMenEventArray,
-                  barebowWomenEventArray=barebowWomenEventArray)
+archery_rating_html(event_array, event_array, path, "UK Archery Rating 2022",
+  barebow_men_event_array = barebow_men_event_array,
+  barebow_women_event_array = barebow_women_event_array
+)

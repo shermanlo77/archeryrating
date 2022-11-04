@@ -1,9 +1,9 @@
-source('archeryrating.R')
-path = 'wa_2019'
+source("archeryrating.R")
+path <- "wa_2019"
 if (!file.exists(path)) {
   dir.create(path)
 }
-recurveEventArray = c(
+recurve_event_array <- c(
   5316,
   5335,
   4791,
@@ -18,7 +18,7 @@ recurveEventArray = c(
   5958,
   6113
 )
-compoundEventArray = c(
+compound_event_array <- c(
   5316,
   5335,
   4791,
@@ -32,4 +32,6 @@ compoundEventArray = c(
   5958,
   6113
 )
-archeryRatingHtml(recurveEventArray, compoundEventArray, path, "WA Archery Rating 2019")
+archery_rating_html(
+  recurve_event_array, compound_event_array, path, "WA Archery Rating 2019"
+)
