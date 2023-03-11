@@ -1,295 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Archery Rating</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}</style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
-  </head>
 
-  <body class="w3-light-grey">
-    <div class="w3-main">
-      <div class="w3-content w3-margin-top">
-        <div class="w3-container w3-card w3-white w3-margin-bottom" style="max-width:1400px;">
-          <h1>Archery Rating - Guide</h1>
-          <form style="display: inline" action="./index.html" method="get"><button class="w3-button w3-blue">Home &#10140;</button></form><p>
+<head>
+  <title>Archery Rating</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    html,
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-family: "Raleway", sans-serif
+    }
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+</head>
 
-          <p>
-            <a href="#summary">[Summary of project]</a><br>
-            <a href="#howratingpointschange">[How do rating points change?]</a><br>
-            <a href="#ratingpointsmean">[What do the rating points mean?]</a><br>
-            <a href="#checkratingpoints">[What can I do to check my rating points?]</a><br>
-            <a href="#whyresistant">[Why are my rating points resistant to change with more tournaments I attend?]</a><br>
-            <a href="#morerounds">[Could Archery Rating consider any more rounds other than WA 720?]</a><br>
-            <a href="#eliminationorelo">[Couldn't Archery Rating use elimination events only or Elo?]</a><br>
-            <a href="#assumptions">[What assumptions does Archery Rating make?]</a><br>
-            <a href="#pros">[What are the pros of Archery Rating?]</a><br>
-            <a href="#cons">[What are the cons of Archery Rating?]</a><br>
-            <a href="#plackettluce">[What is the Plackett-Luce model?]</a><br>
-            <a href="#contributecomments">How can I contribute or give comments?]</a><br>
-            <a href="#references">[References and Acknowledgements]</a>
-          </p>
+<body class="w3-light-grey">
+  <div class="w3-main">
+    <div class="w3-content w3-margin-top">
+      <div class="w3-container w3-card w3-white w3-margin-bottom" style="max-width:1400px;">
+        <h1>Archery Rating - Guide</h1>
+        <form style="display: inline" action="./index.html" method="get"><button class="w3-button w3-blue">Home
+            &#10140;</button></form>
+        <p>
 
-          <h2 id="summary">Summary of the projet</h2>
+        <p>
+          <a href="#summary">[Summary of project]</a><br>
+          <a href="#howratingpointschange">[How do rating points change?]</a><br>
+          <a href="#ratingpointsmean">[What do the rating points mean?]</a><br>
+          <a href="#checkratingpoints">[What can I do to check my rating points?]</a><br>
+          <a href="#whyresistant">[Why are my rating points resistant to change with more tournaments I attend?]</a><br>
+          <a href="#morerounds">[Could Archery Rating consider any more rounds other than WA 720?]</a><br>
+          <a href="#eliminationorelo">[Couldn't Archery Rating use elimination events only or Elo?]</a><br>
+          <a href="#assumptions">[What assumptions does Archery Rating make?]</a><br>
+          <a href="#pros">[What are the pros of Archery Rating?]</a><br>
+          <a href="#cons">[What are the cons of Archery Rating?]</a><br>
+          <a href="#plackettluce">[What is the Plackett-Luce model?]</a><br>
+          <a href="#contributecomments">How can I contribute or give comments?]</a><br>
+          <a href="#references">[References and Acknowledgements]</a>
+        </p>
 
-          <p>
-            Archery Rating aims to run a fairer archery ranking system
-            alongside official rankings. This would be a supplement for those
-            who enjoy numbers and statistics or archers wanting to assess their
-            performance.
-          </p>
+        <h2 id="summary">Summary of the projet</h2>
 
-          <p>
-            This project came about in the UK when in 2018, the method to rank
-            archers nationally was changed. This caused a discussion on what
-            makes a good ranking system. There are two types of events in
-            archery, qualification and elimination. In qualification, archers
-            shoot either a WA 720 or WA 1440 round to produce a score. In
-            elimination, pairs of archers play matches against each other in a
-            single elimination format. A WA 720 qualification followed by
-            elimination is the format used for most World Archery events and the
-            Olympics.
-          </p>
+        <p>
+          Archery Rating aims to run a fairer archery ranking system
+          alongside official rankings. This would be a supplement for those
+          who enjoy numbers and statistics or archers wanting to assess their
+          performance.
+        </p>
 
-          <p>
-            Previously, archers were ranked based on their best five
-            qualification scores. However, this ignores the elimination format
-            completely. The new method rewards archers with points based on
-            their best five finishing positions in both formats. The problem
-            with this method is that it does not consider the playing field as
-            it may be easier to come first in one tournament over another.
-          </p>
+        <p>
+          This project came about in the UK when in 2018, the method to rank
+          archers nationally was changed. This caused a discussion on what
+          makes a good ranking system. There are two types of events in
+          archery, qualification and elimination. In qualification, archers
+          shoot either a WA 720 or WA 1440 round to produce a score. In
+          elimination, pairs of archers play matches against each other in a
+          single elimination format. A WA 720 qualification followed by
+          elimination is the format used for most World Archery events and the
+          Olympics.
+        </p>
 
-          <p>
-            Archery Rating was developed as a side project at university. It
-            uses the Plackett-Luce model. Rating points are earned or lost based
-            on who the archer wins or loses to using only WA 720 + elimination
-            events. This takes into account the playing field and is fairer
-            compared to previous official methods.
-          </p>
+        <p>
+          Previously, archers were ranked based on their best five
+          qualification scores. However, this ignores the elimination format
+          completely. The new method rewards archers with points based on
+          their best five finishing positions in both formats. The problem
+          with this method is that it does not consider the playing field as
+          it may be easier to come first in one tournament over another.
+        </p>
 
-          <h2 id="howratingpointschange">How do rating points change?</h2>
+        <p>
+          Archery Rating was developed as a side project at university. It
+          uses the Plackett-Luce model. Rating points are earned or lost based
+          on who the archer wins or loses to using only WA 720 + elimination
+          events. This takes into account the playing field and is fairer
+          compared to previous official methods.
+        </p>
 
-          <p>
-            Each archer starts with 1440 rating points (to try and be similar to
-            the handicap score in the UK) and represents the middle of the pack.
-          </p>
+        <h2 id="howratingpointschange">How do rating points change?</h2>
 
-          <p>
-            Earn rating points by beating opponents with more rating points than
-            you. However, you will lose rating points by losing to opponents
-            with fewer rating points than you.
-          </p>
+        <p>
+          Each archer starts with 1440 rating points (to try and be similar to
+          the handicap score in the UK) and represents the middle of the pack.
+        </p>
 
-          <p>
-            Your rating points may also be adjusted slightly if your opponents
-            attend an event which you do not. This is to reflect your opponents'
-            future performance and additional information from their opponents
-            too.
-          </p>
+        <p>
+          Earn rating points by beating opponents with more rating points than
+          you. However, you will lose rating points by losing to opponents
+          with fewer rating points than you.
+        </p>
 
-          <p>
-            The rating points are estimated using WA 720 + elimination results
-            from Ianseo. These estimations are rather complicated and require a
-            computer to compute.
-          </p>
+        <p>
+          Your rating points may also be adjusted slightly if your opponents
+          attend an event which you do not. This is to reflect your opponents'
+          future performance and additional information from their opponents
+          too.
+        </p>
 
-          <h2 id="ratingpointsmean">What do the rating points mean?</h2>
+        <p>
+          The rating points are estimated using WA 720 + elimination results
+          from Ianseo. These estimations are rather complicated and require a
+          computer to compute.
+        </p>
 
-          <p>
-            The rating points can be used to estimate the probability that you
-            will beat an archer in a format where it is either WA 720 or
-            elimination chosen at random. If archer A has 400 more rating points
-            than archer B, then the odds of archer A beating archer B is 10:1.
-            The odds scale by a factor of 10 for every increment of 400 rating
-            points.
-          </p>
+        <h2 id="ratingpointsmean">What do the rating points mean?</h2>
 
-          <p>
-            Consider archer A with \(R_A\) rating points and archer B with
-            \(R_B\) rating points. The formula for the probability that archer A
-            beats archer B is
-            \[
-            P(\text{A beats B}) = \dfrac{1}{1+10^{(R_B-R_A)/400}}
-            \]
-          </p>
+        <p>
+          The rating points can be used to estimate the probability that you
+          will beat an archer in a format where it is either WA 720 or
+          elimination chosen at random. If archer A has 400 more rating points
+          than archer B, then the odds of archer A beating archer B is 10:1.
+          The odds scale by a factor of 10 for every increment of 400 rating
+          points.
+        </p>
 
-          <h2 id="checkratingpoints">What can I do to check my rating points?</h2>
+        <p>
+          Consider archer A with \(R_A\) rating points and archer B with
+          \(R_B\) rating points. The formula for the probability that archer A
+          beats archer B is
+          \[
+          P(\text{A beats B}) = \dfrac{1}{1+10^{(R_B-R_A)/400}}
+          \]
+        </p>
 
-          <p>
-            Find your name in a category and click on it. This should list all
-            WA 720 + elimination events you have attended this season. You can
-            also check the list of pairwise comparisons which list all of your
-            opponents in qualification and elimination events along with the
-            outcome.
-          </p>
+        <h2 id="checkratingpoints">What can I do to check my rating points?</h2>
 
-          <p>
-            The pairwise comparisons table also lists your opponents’
-            rating points and the estimated probability of you winning a match
-            against them. These probabilities should be comparable with the
-            match outcome.
-          </p>
+        <p>
+          Find your name in a category and click on it. This should list all
+          WA 720 + elimination events you have attended this season. You can
+          also check the list of pairwise comparisons which list all of your
+          opponents in qualification and elimination events along with the
+          outcome.
+        </p>
 
-          <h2 id="whyresistant">
-            Why are my rating points resistant to change with more
-            tournaments I attend?
-          </h2>
+        <p>
+          The pairwise comparisons table also lists your opponents’
+          rating points and the estimated probability of you winning a match
+          against them. These probabilities should be comparable with the
+          match outcome.
+        </p>
 
-          <p>
-            How much your rating points are prone to change after an event is
-            called the sensitivity. Because all of your events are treated
-            equally, your rating points are very sensitive initially but become
-            less sensitive with more events.
-          </p>
+        <h2 id="whyresistant">
+          Why are my rating points resistant to change with more
+          tournaments I attend?
+        </h2>
 
-          <p>
-            This may seem counter-intuitive but this is a typical property of
-            statistical estimation. This is similar to estimating the
-            probability of a coin flip landing heads. With one coin flip, your
-            estimate is very sensitive, it is either 0% or 100%. But with more
-            and more coin flips your estimate becomes less sensitive and will
-            almost surely be 50%, yet, each coin flip is treated equally.
-          </p>
+        <p>
+          How much your rating points are prone to change after an event is
+          called the sensitivity. Because all of your events are treated
+          equally, your rating points are very sensitive initially but become
+          less sensitive with more events.
+        </p>
 
-          <p>
-            Therefore, to exploit this ranking method, win against the best
-            archer once and stop playing. To tackle this, rating points
-            uncertainty has been provided, if available, which quantifies the
-            possible fluctuation in estimation. A smaller uncertainty suggests
-            that the archer has competed in more events with a larger playing
-            field.
-          </p>
+        <p>
+          This may seem counter-intuitive but this is a typical property of
+          statistical estimation. This is similar to estimating the
+          probability of a coin flip landing heads. With one coin flip, your
+          estimate is very sensitive, it is either 0% or 100%. But with more
+          and more coin flips your estimate becomes less sensitive and will
+          almost surely be 50%, yet, each coin flip is treated equally.
+        </p>
 
-          <h2 id="morerounds">Could Archery Rating consider any more rounds other than WA 720?</h2>
+        <p>
+          Therefore, to exploit this ranking method, win against the best
+          archer once and stop playing. To tackle this, rating points
+          uncertainty has been provided, if available, which quantifies the
+          possible fluctuation in estimation. A smaller uncertainty suggests
+          that the archer has competed in more events with a larger playing
+          field.
+        </p>
 
-          <p>
-            Only WA 720 + elimination events are considered to reflect the
-            format of World Archery and Olympic events. The majority of WA 720 +
-            elimination results are available on Ianseo, making them accessible
-            without official means. Choosing a single format also keeps the
-            rating points more statistically interpretable.
-          </p>
+        <h2 id="morerounds">Could Archery Rating consider any more rounds other than WA 720?</h2>
 
-          <h2 id="eliminationorelo">Couldn't Archery Rating use elimination events only or Elo?</h2>
+        <p>
+          Only WA 720 + elimination events are considered to reflect the
+          format of World Archery and Olympic events. The majority of WA 720 +
+          elimination results are available on Ianseo, making them accessible
+          without official means. Choosing a single format also keeps the
+          rating points more statistically interpretable.
+        </p>
 
-          <p>
-            It is possible to only consider elimination events and make
-            pairwise comparisons only. However and typically, archers do not
-            play enough matches for any meaningful analysis. Using the single
-            elimination format, only half of the archers will only play one
-            match. In addition, the analysis will be very sensitive to upsets.
-            To soften the blow on upsets and to retrieve as much information as
-            possible, Archery Rating uses qualification events too.
-          </p>
+        <h2 id="eliminationorelo">Couldn't Archery Rating use elimination events only or Elo?</h2>
 
-          <p>
-            A problem with Elo is that it requires numerous matches to estimate
-            one's initial Elo score. Archer Rating aims to estimate one's
-            rating points immediately.
-          </p>
+        <p>
+          It is possible to only consider elimination events and make
+          pairwise comparisons only. However and typically, archers do not
+          play enough matches for any meaningful analysis. Using the single
+          elimination format, only half of the archers will only play one
+          match. In addition, the analysis will be very sensitive to upsets.
+          To soften the blow on upsets and to retrieve as much information as
+          possible, Archery Rating uses qualification events too.
+        </p>
 
-          <h2 id="assumptions">What assumptions does Archery Rating make?</h2>
+        <p>
+          A problem with Elo is that it requires numerous matches to estimate
+          one's initial Elo score. Archer Rating aims to estimate one's
+          rating points immediately.
+        </p>
 
-          <p>
-            Archer Rating treats each season individually (no rolling) and each
-            event equally. This means it assumes an archer's performance is
-            constant throughout a season.
-          </p>
+        <h2 id="assumptions">What assumptions does Archery Rating make?</h2>
 
-          <p>
-            Archery Rating also assumes each archer is expected to play with the
-            intent to win and not in collusion with other players by throwing
-            matches or not attending an event for example.
-          </p>
+        <p>
+          Archer Rating treats each season individually (no rolling) and each
+          event equally. This means it assumes an archer's performance is
+          constant throughout a season.
+        </p>
 
-          <h2 id="pros">What are the pros of Archery Rating?</h2>
+        <p>
+          Archery Rating also assumes each archer is expected to play with the
+          intent to win and not in collusion with other players by throwing
+          matches or not attending an event for example.
+        </p>
 
-          <p>
-            Archery Rating is based on pairwise comparisons, who you win and
-            lose against. This has numerous advantages over previous ranking
-            systems. Score-based ranking systems (add up your best 5 scores) do
-            not take into consideration bad weather scores because they are
-            typically low and are not used. Position-based ranking systems do
-            not take into account the playing field, the 1st place in a
-            tournament may be more meaningful compared to the 1st place in
-            another tournament.
-          </p>
+        <h2 id="pros">What are the pros of Archery Rating?</h2>
 
-          <p>
-            Archery Rating overcomes these problems by using pairwise
-            comparisons. In bad weather, it is who you beat that matters, not
-            your score. In tournaments of different scales, you are rewarded or
-            punished depending on who you win or lose against which takes into
-            account the playing field.
-          </p>
+        <p>
+          Archery Rating is based on pairwise comparisons, who you win and
+          lose against. This has numerous advantages over previous ranking
+          systems. Score-based ranking systems (add up your best 5 scores) do
+          not take into consideration bad weather scores because they are
+          typically low and are not used. Position-based ranking systems do
+          not take into account the playing field, the 1st place in a
+          tournament may be more meaningful compared to the 1st place in
+          another tournament.
+        </p>
 
-          <h2 id="cons">What are the cons of Archery Rating?</h2>
+        <p>
+          Archery Rating overcomes these problems by using pairwise
+          comparisons. In bad weather, it is who you beat that matters, not
+          your score. In tournaments of different scales, you are rewarded or
+          punished depending on who you win or lose against which takes into
+          account the playing field.
+        </p>
 
-          <p>
-            A disadvantage of Archery Rating is that it is complicated and not
-            very accessible compared to previous ranking systems. It is not very
-            clear how you can improve your rating points apart from beating
-            archers who have more rating points than you.
-          </p>
+        <h2 id="cons">What are the cons of Archery Rating?</h2>
 
-          <p>
-            Archer Rating is harsher compared to previous official rankings.
-            Official rankings typically take your top scores or points and
-            ignore the lower ones. Archery Rating punishes bad performance. It
-            isn't a great feeling to pay and spend time for an event,
-            underperform AND lose rating points.
-          </p>
+        <p>
+          A disadvantage of Archery Rating is that it is complicated and not
+          very accessible compared to previous ranking systems. It is not very
+          clear how you can improve your rating points apart from beating
+          archers who have more rating points than you.
+        </p>
 
-          <p>
-            Archery Rating (and similar ranking systems) is also susceptible to
-            players protecting their rating points after a lucky win by not
-            attending any more events. This is why Archery Rating aims to run
-            alongside official rankings to not hinder player activity.
-          </p>
+        <p>
+          Archer Rating is harsher compared to previous official rankings.
+          Official rankings typically take your top scores or points and
+          ignore the lower ones. Archery Rating punishes bad performance. It
+          isn't a great feeling to pay and spend time for an event,
+          underperform AND lose rating points.
+        </p>
 
-          <h2 id="plackettluce">What is the Plackett-Luce model?</h2>
+        <p>
+          Archery Rating (and similar ranking systems) is also susceptible to
+          players protecting their rating points after a lucky win by not
+          attending any more events. This is why Archery Rating aims to run
+          alongside official rankings to not hinder player activity.
+        </p>
 
-          <p>
-            The Plackett-Luce model is for modelling partial rankings. If it is
-            possible to order a subset of archers from best to worst, it would
-            be appropriate for the Plackett-Luce model. For example,
-            in qualification, archers are ranked based on their scores.
-            In elimination, rankings are done in pairs for each match, ranking
-            the winner of the match over the loser.
-          </p>
+        <h2 id="plackettluce">What is the Plackett-Luce model?</h2>
 
-          <h2 id="contributecomments">How can I contribute or give comments?</h2>
+        <p>
+          The Plackett-Luce model is for modelling partial rankings. If it is
+          possible to order a subset of archers from best to worst, it would
+          be appropriate for the Plackett-Luce model. For example,
+          in qualification, archers are ranked based on their scores.
+          In elimination, rankings are done in pairs for each match, ranking
+          the winner of the match over the loser.
+        </p>
 
-          <p>
-            Please visit the
-            <a href="https://github.com/shermanlo77/archeryrating">GitHub repo</a>
-            and raise an issue. Or find my contact details on my
-            <a href="https://github.com/shermanlo77">GitHub profile.</a> Thanks!
-          </p>
+        <h2 id="contributecomments">How can I contribute or give comments?</h2>
 
-          <h2 id="references">References and Acknowledgements</h2>
-          <ul>
-            <li><a href="https://link.springer.com/article/10.1007/s00180-020-00959-3">Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I., 2020. Modelling rankings in R: The PlackettLuce package. <i>Computational Statistics</i>, pp.1-31.</a></li>
-            <li>The results were extracted from <a href="https://www.ianseo.net">Ianseo</a> with the help of Tony Sze.</li>
-            <li>Helpful discussions with students and academic staff at the University of Warwick.</li>
-          </ul>
-        </div>
+        <p>
+          Please visit the
+          <a href="https://github.com/shermanlo77/archeryrating">GitHub repo</a>
+          and raise an issue. Or find my contact details on my
+          <a href="https://github.com/shermanlo77">GitHub profile.</a> Thanks!
+        </p>
+
+        <h2 id="references">References and Acknowledgements</h2>
+        <ul>
+          <li><a href="https://link.springer.com/article/10.1007/s00180-020-00959-3">Turner, H.L., van Etten, J., Firth,
+              D. and Kosmidis, I., 2020. Modelling rankings in R: The PlackettLuce package. <i>Computational
+                Statistics</i>, pp.1-31.</a></li>
+          <li>The results were extracted from <a href="https://www.ianseo.net">Ianseo</a> with the help of Tony Sze.
+          </li>
+          <li>Helpful discussions with students and academic staff at the University of Warwick.</li>
+        </ul>
       </div>
-
-      <div class="w3-container w3-dark-grey w3-padding-32">
-        <div class="w3-row">
-          GPL-3.0 License
-          <br>
-          <a href="https://github.com/shermanlo77/archeryrating">Github: https://github.com/shermanlo77/archeryrating</a>
-       </div>
-      </div>
-
     </div>
-  </body>
+
+    <div class="w3-container w3-dark-grey w3-padding-32">
+      <div class="w3-row">
+        GPL-3.0 License
+        <br>
+        <a href="https://github.com/shermanlo77/archeryrating">Github: https://github.com/shermanlo77/archeryrating</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+
 </html>
