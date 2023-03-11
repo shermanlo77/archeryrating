@@ -24,10 +24,7 @@ library(tableHTML)
 # PARAMETERS:
 # title: the title of the html page
 # n_up_to_css: number of directories to go up to access the css directory
-header <- function(title, n_up_to_css = 0) {
-  css_prefix <- paste0(
-    paste0(replicate(n_up_to_css, "../"), collapse = ""), "css/"
-  )
+header <- function(title) {
   html <- paste0(
     "<!DOCTYPE html>\n",
     '<html lang="en">\n',
@@ -35,9 +32,9 @@ header <- function(title, n_up_to_css = 0) {
     "    <title>", title, " - Archery Rating</title>\n",
     '    <meta charset="UTF-8">\n',
     '    <meta name="viewport" content="width=device-width, initial-scale=1">\n',
-    '    <link rel="stylesheet" href="', css_prefix, 'w3.css">\n',
-    '    <link rel="stylesheet" href="', css_prefix, 'css.css">\n',
-    '    <link rel="stylesheet" href="', css_prefix, 'font-awesome.min.css">\n',
+    '    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">\n',
+    '    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">\n',
+    '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">\n',
     '    <style>html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}</style>\n',
     "  </head>\n",
     "\n",
@@ -164,7 +161,7 @@ render_homepage <- function(title, category_bowtype_link, event_array_matrix,
   }
 
   html <- paste0(
-    header(title, 1),
+    header(title),
     "\n",
     '      <header class="w3-container" style="padding-top:22px">\n',
     "        <h1>", title, "</h1>\n",
@@ -193,7 +190,7 @@ render_rank <- function(category_bowtype, table, location) {
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
   html <- paste0(
-    header(category_bowtype, 1),
+    header(category_bowtype),
     "\n",
     '      <header class="w3-container" style="padding-top:22px">\n',
     "        <h1>", category_bowtype, "</h1>\n",
@@ -223,7 +220,7 @@ render_event <- function(event, event_number, category_bowtype, format, results,
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
   html <- paste0(
-    header(event, 2),
+    header(event),
     "\n",
     '      <header class="w3-container" style="padding-top:22px">\n',
     "        <h1>", event, "</h1>\n",
@@ -260,7 +257,7 @@ render_individual <- function(archer, country, category_bowtype, archer_rank,
   file_conn <- file(location)
   title <- paste(archer, "-", country)
   html <- paste0(
-    header(title, 2),
+    header(title),
     "\n",
     '      <header class="w3-container" style="padding-top:22px">\n',
     "        <h1>", title, "</h1>\n",
