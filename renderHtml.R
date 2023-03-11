@@ -59,22 +59,35 @@ ender <- function() {
 # Return html code for the footer of the html page. Contains miscellaneous
 # information such as
 # license, github, time of rendering, versions
-footer <- function() {
+footer <- function(footer_notes = NULL) {
   html <- paste0(
     "      <br>\n",
     '      <div class="w3-container w3-dark-grey w3-padding-32">\n',
     '        <div class="w3-row">\n',
     "          GPL-3.0 License\n",
-    "          <br>\n",
-    '          <a href="https://github.com/shermanlo77/archeryrating">Github: https://github.com/shermanlo77/archeryrating</a>', " @", system("git rev-parse HEAD", intern = TRUE), "\n",
-    "          <br>\n",
+    "          <br>\n"
+  )
+
+  # add optional footer_notes
+  if (!is.null(footer_notes)) {
+    html <- paste0(
+      html,
+      "         ", footer_notes, "\n",
+      "          <br>\n"
+    )
+  }
+
+  html <- paste0(
+    html,
     "          Rendered: ", Sys.time(), "\n",
+    "          <br>\n",
+    '          <a href="https://github.com/shermanlo77/archeryrating">Github: https://github.com/shermanlo77/archeryrating</a>', " @", system("git describe --tags --always", intern = TRUE), "\n",
     "          <br>\n",
     "          ", R.Version()$version.string, "\n",
     "          <br>\n",
     "          PlackettLuce version ", packageVersion("PlackettLuce"), "\n",
     "          <br>\n",
-    "          Data from Ianseo may be cleaned and corrected manually. Data cleaning logs may be available in the repository or the homepage.\n",
+    "          Data from Ianseo may be cleaned and corrected manually\n",
     "       </div>\n",
     "      </div>\n"
   )
@@ -141,7 +154,7 @@ table_to_html <- function(table) {
 # event_array_matrix: R table or matrix of events (and links) to display
 # location: where to save the html file
 render_homepage <- function(title, category_bowtype_link, event_array_matrix,
-                            location) {
+                            location, footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
 
@@ -173,7 +186,7 @@ render_homepage <- function(title, category_bowtype_link, event_array_matrix,
     "        <h2>Events</h2>\n",
     "        ", table_to_html(event_array_matrix), "\n\n",
     "      </div>\n",
-    footer(),
+    footer(footer_notes),
     ender()
   )
   writeLines(html, file_conn)
@@ -186,7 +199,8 @@ render_homepage <- function(title, category_bowtype_link, event_array_matrix,
 # category_bowtype: the name of they category (in full English)
 # table: R table or matrix of results (and links) to display
 # location: where to save the html file
-render_rank <- function(category_bowtype, table, location) {
+render_rank <- function(category_bowtype, table, location,
+                        footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
   html <- paste0(
@@ -199,7 +213,7 @@ render_rank <- function(category_bowtype, table, location) {
     '      <div class="w3-container">\n',
     table_to_html(table), "\n\n",
     "      </div>\n",
-    footer(),
+    footer(footer_notes),
     ender()
   )
   writeLines(html, file_conn)
@@ -216,7 +230,7 @@ render_rank <- function(category_bowtype, table, location) {
 # results: R table or matrix of results (and links) to display
 # location: where to save the html file
 render_event <- function(event, event_number, category_bowtype, format, results,
-                         location) {
+                         location, footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
   html <- paste0(
@@ -231,7 +245,7 @@ render_event <- function(event, event_number, category_bowtype, format, results,
     "        <h2>", paste0(category_bowtype, " - ", format), "</h2>\n",
     table_to_html(results), "\n\n",
     "      </div>\n",
-    footer(),
+    footer(footer_notes),
     ender()
   )
   writeLines(html, file_conn)
@@ -252,7 +266,7 @@ render_event <- function(event, event_number, category_bowtype, format, results,
 # location: where to save the html file
 render_individual <- function(archer, country, category_bowtype, archer_rank,
                               archer_points, event_table, pairwise_table,
-                              location) {
+                              location, footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
   file_conn <- file(location)
   title <- paste(archer, "-", country)
@@ -275,7 +289,7 @@ render_individual <- function(archer, country, category_bowtype, archer_rank,
     "        <h3>Pairwise comparisons</h3>\n",
     table_to_html(pairwise_table), "\n\n",
     "      </div>\n",
-    footer(),
+    footer(footer_notes),
     ender()
   )
   writeLines(html, file_conn)

@@ -39,6 +39,7 @@ source("renderHtml.R")
 # tile: title to put on the home page
 archery_rating_html <- function(recurve_event_array, compound_event_array,
                                 html_path, title,
+                                footer_notes = NULL,
                                 barebow_men_event_array = NULL,
                                 barebow_women_event_array = NULL) {
   registerDoParallel(detectCores())
@@ -295,7 +296,7 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         )
         render_event(
           event, event_number, category_bowtype, format, kable,
-          output_file
+          output_file, footer_notes
         )
       }
 
@@ -340,7 +341,8 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
       colnames(kable) <- c("Rank", "Name", "Country", "Points", "Uncertainty")
       render_rank(
         category_bowtype, kable,
-        file.path(html_path, paste0(category_bowtype_code, ".html"))
+        file.path(html_path, paste0(category_bowtype_code, ".html")),
+        footer_notes
       )
 
       # link the homepage to this
@@ -517,7 +519,7 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         )
         render_individual(
           archer, country, category_bowtype, archer_rank, round(archer_points),
-          kable, kable2, output_file
+          kable, kable2, output_file, footer_notes
         )
       }
     }
@@ -525,7 +527,8 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
 
   render_homepage(
     title, category_bowtype_link, event_array_matrix,
-    file.path(html_path, "index.html")
+    file.path(html_path, "index.html"),
+    footer_notes
   )
 }
 
