@@ -18,12 +18,12 @@
 # Contains functions and procedures for rendering HTML pages
 
 library(tableHTML)
-# FUNCTION: HEADER
+
 # Return html code for the start of the html file, includes <head> and starts
 # <body> and main <div>
-# PARAMETERS:
-# title: the title of the html page
-# n_up_to_css: number of directories to go up to access the css directory
+# Args:
+#   title: the title of the html page
+#   n_up_to_css: number of directories to go up to access the css directory
 header <- function(title) {
   html <- paste0(
     "<!DOCTYPE html>\n",
@@ -44,8 +44,7 @@ header <- function(title) {
   return(html)
 }
 
-# FUNCTION: END
-# Return the final few lines of the html file. Used in conjunction with
+# Return the final few lines of the html file
 ender <- function() {
   html <- paste0(
     "    </div>\n",
@@ -55,10 +54,8 @@ ender <- function() {
   return(html)
 }
 
-# FUNCTION: FOOTER
 # Return html code for the footer of the html page. Contains miscellaneous
-# information such as
-# license, github, time of rendering, versions
+# information such as license, github, time of rendering, versions
 footer <- function(footer_notes = NULL) {
   html <- paste0(
     "      <br>\n",
@@ -94,11 +91,10 @@ footer <- function(footer_notes = NULL) {
   return(html)
 }
 
-# FUNCTION: LINK TO BUTTON
 # Returns html code for a linked button
-# PARAMETERS:
-# text: text for the button
-# url: where to link to button
+# Args:
+#   text: text for the button
+#   url: where to link to button
 link_to_button <- function(text, url) {
   html <- paste0(
     '<form style="display: inline" action="', url,
@@ -108,10 +104,9 @@ link_to_button <- function(text, url) {
   return(html)
 }
 
-# FUNCTION: LINK TO IANSEO
 # Returns html code for a linked button to a Ianseo page
-# PARAMETERS:
-# event_number: integer
+# Args:
+#   event_number: integer
 link_to_ianseo <- function(event_number) {
   event_number <- as.character(event_number)
   html <- paste0(
@@ -123,7 +118,6 @@ link_to_ianseo <- function(event_number) {
   return(html)
 }
 
-# FUNCTION: TABLE TO HTML
 # Converts a table (or matrix) into a html table
 table_to_html <- function(table) {
   # the table may include html code, so use escape=FALSE
@@ -145,14 +139,13 @@ table_to_html <- function(table) {
   return(html)
 }
 
-# PROCEDURE: RENDER HOMEPAGE
 # Creates and saves a html file for the homepage of a season
 # Links to all events and categories of the season
-# PARAMETERS:
-# category_bowtype_link: array of links to each category in order:
-# RM, RW, CM, CW
-# event_array_matrix: R table or matrix of events (and links) to display
-# location: where to save the html file
+# Args:
+#   category_bowtype_link: array of links to each category in order:
+#     RM, RW, CM, CW
+#   event_array_matrix: R table or matrix of events (and links) to display
+#   location: where to save the html file
 render_homepage <- function(title, category_bowtype_link, event_array_matrix,
                             location, footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
@@ -193,12 +186,11 @@ render_homepage <- function(title, category_bowtype_link, event_array_matrix,
   close(file_conn)
 }
 
-# PROCEDURE: RENDER RANK
 # Creates and saves a html file for the ranks of a category
-# PARAMETERS:
-# category_bowtype: the name of they category (in full English)
-# table: R table or matrix of results (and links) to display
-# location: where to save the html file
+# Args:
+#   category_bowtype: the name of they category (in full English)
+#   table: R table or matrix of results (and links) to display
+#   location: where to save the html file
 render_rank <- function(category_bowtype, table, location,
                         footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
@@ -220,15 +212,14 @@ render_rank <- function(category_bowtype, table, location,
   close(file_conn)
 }
 
-# PROCEDURE: RENDER EVENT
 # Creates and saves a html file for an event
-# PARAMETERS:
-# event: the name of the event (in full English)
-# event_number: integer
-# category_bowtype: the name of the category (in full English)
-# format: string the format (qualification, elimiation)
-# results: R table or matrix of results (and links) to display
-# location: where to save the html file
+# Args:
+#   event: the name of the event (in full English)
+#   event_number: integer
+#   category_bowtype: the name of the category (in full English)
+#   format: string the format (qualification, elimiation)
+#   results: R table or matrix of results (and links) to display
+#   location: where to save the html file
 render_event <- function(event, event_number, category_bowtype, format, results,
                          location, footer_notes = NULL) {
   cat(paste0("Rendering ", location, "\n"))
@@ -252,18 +243,17 @@ render_event <- function(event, event_number, category_bowtype, format, results,
   close(file_conn)
 }
 
-# PROCEDURE: RENDER INDIVIDUAL
 # Creates and saves a html file for each individual
-# PARAMETERS:
-# archer: the name of the event (in full English)
-# country: string country code
-# category_bowtype: the name of their category (in full English)
-# archer_rank: int, rank of this archer
-# archer_points: int, number of points
-# event_table: R table or matrix of events attended (and links) to display
-# pairwise_table: R table or matrix of pairwise comparisons (and links) to
-# display
-# location: where to save the html file
+# Args:
+#   archer: the name of the event (in full English)
+#   country: string country code
+#   category_bowtype: the name of their category (in full English)
+#   archer_rank: int, rank of this archer
+#   archer_points: int, number of points
+#   event_table: R table or matrix of events attended (and links) to display
+#   pairwise_table: R table or matrix of pairwise comparisons (and links) to
+#     display
+#   location: where to save the html file
 render_individual <- function(archer, country, category_bowtype, archer_rank,
                               archer_points, event_table, pairwise_table,
                               location, footer_notes = NULL) {

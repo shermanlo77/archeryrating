@@ -22,35 +22,56 @@ library(doParallel)
 source("cleannames.R")
 source("renderHtml.R")
 
-# PROCEDURE: ARCHERY RATING HTML
 # Process the provided .csv files from IanseoParse and create a website
-# containing the plackett luce rating scores. It creates categories: men's
-# recurve, women's recurve, men's compound, women's compound.
-# the plackett luce worth scores are translate to elo-like scores, see
+# containing the plackett luce rating scores. It creates categories:
+#     men's recurve
+#     women's recurve
+#     men's compound
+#     women's compound
+#     optional: men's barebow
+#     optional: women's barebow
+# The plackett luce worth scores are translate to elo-like scores, see the
 # function get_points()
 # Note: this is computationally intensive, use of multiple threads is
-# recommended
-# PARAMETERS:
-# recurve_event_array: number code for each Ianseo recurve event, must be in
-# chronological order and should be consistent with compound_event_array
-# compound_event_array: number code for each Ianseo compound event, must be in
-# chronological order and should be consistent with compound_event_array
-# html_path: name of directory where the html files are saved
-# tile: title to put on the home page
-archery_rating_html <- function(recurve_event_array, compound_event_array,
-                                html_path, title,
+# recommended and automatically used
+#
+# Args:
+#   recurve_event_array: list of number codes (int) for each Ianseo recurve
+#     event, must be in chronological order. They are also the name of
+#     directories to be searched for .csv and .txt files
+#   compound_event_array: list of number codes (int) for each Ianseo compound
+#     event, must be in chronological order. They are also the name of
+#     directories to be searched for .csv and .txt files
+#   html_path: name of directory where the html files are saved
+#   title: string, the name given to the collection of archery event, eg World
+#     Cup, this will be, for example, put on the home page
+#   footer_notes: string, notes to put in the footer for all html files, for
+#     example, copyright notices or version number
+#   barebow_men_event_array: optional, list of int for Ianseo men's barebow
+#     events
+#   barebow_women_event_array: optional, list of int for Ianseo women's barebow
+#     events
+archery_rating_html <- function(recurve_event_array,
+                                compound_event_array,
+                                html_path,
+                                title,
                                 footer_notes = NULL,
                                 barebow_men_event_array = NULL,
                                 barebow_women_event_array = NULL) {
   registerDoParallel(detectCores())
 
-  # homepage variables
-  # list of category and bowtypes, in full text format (eg Men's Recurve)
+  # homepage variables, the variables category_bowtype_link,
+  # event_array_matrix the the args of this function contain all the information
+  # required to build the homepage (index.html)
+
+  # list of links for each category
+  # eg "RM.html", "RW.html", "CM.html", "CW.html"
   category_bowtype_link <- c()
-  # list of events
-  # dim 1: for each event
-  # dim 2: event name, format, list of categories and links
-  #   (in category_bowtype_code format)
+  # matrix of events as a html string (may also contain links)
+  # to be displayed on the homepage
+  #   dim 1: for each event
+  #   dim 2: event name, format (elimination or qualification), list of
+  #     categories with their links
   event_array_matrix <- matrix(nrow = 0, ncol = 3)
   colnames(event_array_matrix) <- c("Event", "Format", "Categories")
 
@@ -61,10 +82,14 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
 
   for (bowtype in c("Recurve", "Compound", "Barebow")) {
     for (category in c("Men", "Women")) {
+
+      # example of bowtype codes, Men's Recurve = RM, Women's Compound = CW
+      # chosen so that it is consistent with Ianseo
       category_bowtype_code <- paste0(
         substr(bowtype, 1, 1),
         substr(category, 1, 1)
       )
+      # human readable form, eg Men's Recurve, Women's Compound
       category_bowtype <- paste0(category, "'s ", bowtype)
 
       # create directory for this category
@@ -72,8 +97,10 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         dir.create(file.path(html_path, category_bowtype_code))
       }
 
-      # loop through these event numbers
-      # in this implementation each event has a WA720 and bracket
+      # event_number_array is list of event numbers to iterate through
+      # in this implementation it is assumed each event_number consist of both
+      # qualification and elimination
+      # do not proceed if a barebow event is not provided
       if (bowtype == "Recurve") {
         event_number_array <- recurve_event_array
       } else if (bowtype == "Compound") {
@@ -92,40 +119,57 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         }
       }
 
-      # list for ranking data
-      # element 1 (rank matrix):
-      # matrix of ranks, use 0 to denote not attended
-      # dim1: for each ranking (eg, each WA 720 and each H2H match)
-      # dim2: for each archer (named using archers' names)
-      # element 2 (pointer):
-      # matrix for indicating the event of each row of the rank matrix
-      # dim1: for each row in the rank matrix
-      # dim2: event number, boolean: is_qualification
+      # list for ranking data, length 2
+      #   [[1]] element 1 (rank matrix):
+      #     matrix of partial ranks, use 0 to denote not attended, each row is
+      #     for a WA 720 or a H2H match. For a WA 720, the row should contain
+      #     1, 2, 3, ..., number_of_competitors, and the rest zeros. For a H2H
+      #     match, it should contain 1, 2 and the rest zeros
+      #       dim1: for each partial rank (eg, for each WA 720 or each H2H
+      #         match)
+      #       dim2: for each archer (named using archers' names)
+      #   [[2]] element 2:
+      #     matrix for indicating the event of each row of the rank matrix in
+      #     element 1
+      #       dim1: for each row in the rank matrix
+      #       dim2: size 2, the first column contain the event number, the
+      #         second column is boolean, 0 or 1, 1 if is_qualification
       rank_matrix <- list(matrix(nrow = 0, ncol = 0), c())
-      country_array <- c() # array of countries for each archer (names)
-      # list of details for each event (WA720, bracket)
-      # dim1: for each event
-      # dim2: name of event, result summary, points
+      # array of countries for each archer (names)
+      #   index names: string, archer's name
+      #   element: string rep of the event, country code
+      country_array <- c()
+      # nested list of details for each event
+      #   dim1: [[for each WA 720 and H2H event]]
+      #   dim2:
+      #      [[1]] contains the name of event as a single string,
+      #      [[2]] results to display as a data frame
+      #      [[3]] rating points each archer has as a vector
+      #        index name: archer's name
+      #        contains: float, rating points
       event_array <- list()
       # indicate the event number for each row in event_array[[]][[2]]
-      # dim1: for each event
-      # dim2: event number, boolean: is_qualification
+      #   dim1: for each event
+      #   dim2:
+      #     column 1 contains event number
+      #     columns2 contains boolean as 0 or 1, 1 if is_qualification
       event_array_event_numbers <- matrix(nrow = 0, ncol = 2)
 
-      # combine the rank matrices for each event
+      # combine the rank matrices from each event
       # record the country of each archer
       # update the homepage link to events
       for (i_event in seq_len(length(event_number_array))) {
         event_number <- event_number_array[i_event]
+        # get information (eg date and location) about the event number
         event <- read_file(file.path(as.character(event_number), "event.txt"))
-        event <- paste0(gsub("[\n]", "<br>", event))
+        event <- paste0(gsub("[\n]", "<br>", event)) # use html new line
 
-        # create directory for this event
+        # create directory for this event number
         if (!file.exists(file.path(html_path, event_number))) {
           dir.create(file.path(html_path, event_number))
         }
 
-        # for the qualification and the brackets
+        # process qualification, then elimination
         for (is_qualification in c(TRUE, FALSE)) {
           if (is_qualification) {
             format <- "Qualification"
@@ -134,14 +178,15 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
           }
 
           # event_summary is a list
-          # element 1: columns of rank matrix
-          # element 2: result summary
+          # [[1]]: partial rank matrix for this event, index are name of archers
+          # [[2]]: data frame, summary of event results to be presented
           event_summary <- get_rank_row(
-            event_number, is_qualification, bowtype,
-            category
+            event_number, is_qualification, bowtype, category
           )
 
-          # get the rank matrix, append it and fit plackett_luce
+          # get the rank matrix for this event
+          # merge it/append it/concatenate it with the rank matrix for all
+          # previous events
           rank <- event_summary[[1]]
           rank_matrix[[1]] <- combine_rank_matrix(rank_matrix[[1]], rank)
           rank_matrix[[2]] <- rbind(
@@ -156,15 +201,19 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
           kable <- event_summary[[2]]
 
           # add the name of the event and the summary table to event_array
-          event_array[[length(event_array) + 1]] <- list(event, kable, NULL)
-          # add the event_number and is_qualification to event_array_event
-          # numbers
+          event_array[[length(event_array) + 1]] <- list(
+            event,
+            kable,
+            NULL # to contain rating points later on
+          )
+          # add the event_number and is_qualification to
+          # event_array_event_numbers
           event_array_event_numbers <- rbind(
             event_array_event_numbers,
             c(event_number, is_qualification)
           )
 
-          # save the country for each archer
+          # save the country for each archer to country_array
           for (i_archer in seq_len(nrow(kable))) {
             archer <- kable$Name[i_archer]
             if (length(country_array) == 0) {
@@ -192,6 +241,10 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
             matrix(c(event_number, is_qualification), ncol = 2), ""
           )
           button <- link_to_button(category_bowtype_code, link)
+          # add button to event_array_matrix
+          # if the event already exist (because it was done for a previous
+          # category), put the button next to the button for the previous
+          # category
           if (!any(event_pointer)) {
             event_array_matrix <- rbind(
               c(event, format, button),
@@ -205,7 +258,16 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
           }
         }
       }
-      # get each unique event
+      # get each unique event (duplicate happens because there are multiple
+      # matches in an event)
+      # event_number_array should return a matrix like this
+      #      [,1] [,2]
+      # [1,] xxxx    1
+      # [1,] xxxx    0
+      # [1,] yyyy    1
+      # [1,] yyyy    0
+      #
+      # where each event number has a qualification event and elimination event
       event_number_array <- matrix(unique(rank_matrix[[2]]), ncol = 2)
 
       # for each event, fit plackett luce
@@ -214,8 +276,6 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
       ) %dopar% {
         event_number <- event_number_array[i_event, 1]
         is_qualification <- event_number_array[i_event, 2]
-
-        # get the pointer for this event and all previous events
 
         # get current event pointer
         rank_matrix_row_pointer <- (
@@ -245,8 +305,10 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
 
       # rating points for each archer
       points <- c()
+      # would calculate rating points after each event, thus the iteration over
+      # events
       for (i_event in seq_len(nrow(event_number_array))) {
-        event <- event_array[[i_event]][[1]]
+        event <- event_array[[i_event]][[1]] # string describing the event
         event_number <- event_number_array[i_event, 1]
         is_qualification <- event_number_array[i_event, 2]
         if (is_qualification) {
@@ -281,10 +343,14 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         rownames(kable) <- NULL
         event_array[[i_event]][[2]] <- kable
 
-        # knit the table
+        # construct the table
         if (is_qualification) {
+          # IQ stands for individual qualification
+          # to be consistent with Ianseo
           output_file <- paste0("IQ", category_bowtype_code, ".html")
         } else {
+          # IF stands for individual finals
+          # to be consistent with Ianseo
           output_file <- paste0("IF", category_bowtype_code, ".html")
         }
         output_file <- file.path(
@@ -327,7 +393,7 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
 
       names(quasi_error) <- names(points)
 
-      # sort the points and knit a table showing all archers' points
+      # sort the points and construct a table showing all archers' points
       points <- sort(points, decreasing = TRUE)
       kable <- matrix(nrow = length(points), ncol = 5)
       kable[, 1] <- seq_len(length(points))
@@ -338,7 +404,10 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
       kable[, 2] <- convert_name_to_html(
         kable[, 2], paste0(category_bowtype_code, "/")
       )
-      colnames(kable) <- c("Rank", "Name", "Country", "Points", "Uncertainty")
+      colnames(kable) <- c(
+        "Rank", "Name", "Country",
+        "Points", "Uncertainty"
+      )
       render_rank(
         category_bowtype, kable,
         file.path(html_path, paste0(category_bowtype_code, ".html")),
@@ -351,7 +420,7 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
         paste0(category_bowtype_code, ".html")
       )
 
-      # for each archer, knit a table
+      # for each archer, construct a table
       for (i_archer in seq_len(length(points))) {
         archer <- names(points)[i_archer]
         country <- country_array[archer]
@@ -412,13 +481,13 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
           )
         }
 
-        # knit a table for each pairwise comparison
+        # construct a table for each pairwise comparison
         # get pointers of the rows of the rank matrix where this archer has
         # attended
         rank_matrix_sub_pointer <- (rank_matrix[[1]][, archer] > 0)
         # get list of events this archer has attended
-        # dim 1: each event
-        # dim 2: event number, is_qualification
+        #   dim 1: each event
+        #   dim 2: event number, is_qualification
         archer_event_number <- matrix(
           rank_matrix[[2]][rank_matrix_sub_pointer, ],
           ncol = 2
@@ -494,7 +563,7 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
           }
         }
 
-        # lable columns of the table
+        # label columns of the table
         colnames(kable) <- c(
           "Rank", "Event", "Format",
           "Points after event", "Points earned at event",
@@ -524,7 +593,6 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
       }
     }
   }
-
   render_homepage(
     title, category_bowtype_link, event_array_matrix,
     file.path(html_path, "index.html"),
@@ -532,13 +600,12 @@ archery_rating_html <- function(recurve_event_array, compound_event_array,
   )
 }
 
-# FUNCTION: COMBINE RANK MATRIX
 # Concatenate the two provided rank matrices
-# PARAMETERS:
-# rank1: rank matrix to concatenate
-# rank2: rank matrix to concatenate
-# RETURN:
-# concatenated rank matrix
+# Args:
+#   rank1: rank matrix to concatenate
+#   rank2: rank matrix to concatenate
+# Returns:
+#   concatenated rank matrix
 combine_rank_matrix <- function(rank1, rank2) {
   names <- union(colnames(rank1), colnames(rank2))
   rank_matrix <- matrix(0,
@@ -551,12 +618,11 @@ combine_rank_matrix <- function(rank1, rank2) {
   return(rank_matrix)
 }
 
-# FUNCTION: GET POINTS
 # Convert the coefficient of plackett_luce to elo-like points
-# PARAMETERS:
-# plackett_luce: fitted plackett_luce object
-# RETURN:
-# vector of points
+# Args:
+#   plackett_luce: fitted plackett_luce object
+# Returns:
+#   vector of points
 get_points <- function(plackett_luce) {
   worth <- (coef(plackett_luce, log = FALSE, type = "worth"))
   n <- length(worth)
@@ -566,17 +632,16 @@ get_points <- function(plackett_luce) {
   return(elo)
 }
 
-# FUNCTION: GET RANK ROW
 # Return rows of a rank matrix from an event
 #
-# PARAMETERS:
-# event_number: integer for Ianseo
-# is_qualification: boolean if this is a qualification round
-# bowtype: string, 'Recurve' or 'Compound'
-# category: string, 'Men' or 'Women'
-# RETURN a list with the following:
-# 1. rows of a rank matrix
-# 2. data from the event
+# Args:
+#   event_number: integer for Ianseo
+#   is_qualification: boolean if this is a qualification round
+#   bowtype: string, 'Recurve', 'Compound' or 'Barebow'
+#   category: string, 'Men' or 'Women'
+# Returns: a list with the following:
+#   1. rows of a rank matrix
+#   2. data from the event
 get_rank_row <- function(event_number, is_qualification, bowtype, category) {
 
   # read the qualification
@@ -699,20 +764,17 @@ get_rank_row <- function(event_number, is_qualification, bowtype, category) {
   }
 }
 
-# FUNCTION: NAME TO HTML
 # Convert name to a suitable html name
 name_to_html <- function(name) {
   name <- gsub(" ", "-", tolower(stri_enc_toascii(name)), fixed = TRUE)
   return(name)
 }
 
-# FUNCTION: CONVERT NAME TO HTML
 # Add a link to the name of archers in HTML format
-# PARAMETERS:
-# name: vector of names
-# prefix_to_link: path to where the individual archer's pages are stored
-# RETURN;
-# vector of names in HTML format
+# Args:
+#   name: vector of names
+#   prefix_to_link: path to where the individual archer's pages are stored
+# Returns: vector of names in HTML format
 convert_name_to_html <- function(name, prefix_to_link) {
   name <- paste0(
     '<a href="', prefix_to_link, name_to_html(name), '.html">', name,
@@ -721,18 +783,16 @@ convert_name_to_html <- function(name, prefix_to_link) {
   return(name)
 }
 
-# FUNCTION: CONVERT EVENT TO HTML
 # For a given event and bow category, return <a> with url link for that event
 # page
-# PARAMETERS:
-# event_name: vector of event names
-# category_bowtype_code
-# event_number_array: matrix of event numbers
-# dim 1: for each event in event_name
-# dim 2: event_number, is_qualification
-# prefix_to_link: path to where the event directory is
-# RETURN:
-# vector of event names in HTML format
+# Args:
+#   event_name: vector of event names
+#   category_bowtype_code
+#   event_number_array: matrix of event numbers
+#     dim 1: for each event in event_name
+#     dim 2: event_number, is_qualification
+#   prefix_to_link: path to where the event directory is
+# Returns: vector of event names in HTML format
 convert_event_to_html <- function(event_name, category_bowtype_code,
                                   event_number_array,
                                   prefix_to_link) {
@@ -747,7 +807,6 @@ convert_event_to_html <- function(event_name, category_bowtype_code,
   return(event_html)
 }
 
-# FUNCTION: GET EVENT HTML
 # For a given event and bow category, return url link for that event page
 get_event_html <- function(category_bowtype_code, event_number_array,
                            prefix_to_link) {
@@ -762,12 +821,12 @@ get_event_html <- function(category_bowtype_code, event_number_array,
   return(url)
 }
 
-# FUNCTION: GET PROBABILITY WIN
+# Calculate the probability A beats B given their rating points
 get_probability_win <- function(points_a, points_b) {
   return(1 / (1 + 10^((points_b - points_a) / 400)))
 }
 
-# FUNCTION: PRESENT PROBABILITY
+# Return a probability to a readable string form
 probability_to_html <- function(prob) {
   if (prob < 0.01) {
     text <- "&lt;1&percnt;"

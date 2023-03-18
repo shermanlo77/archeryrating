@@ -1,12 +1,18 @@
 # Archery Rating (Using PlackettLuce)
 
-Extract recurve and compound event scores from [Ianseo](https://ianseo.net/) and
-builds a website containing the resulting ranks of all archers. The statistical
-analysis was written in *R*, using the
-[PlackettLuce](https://hturner.github.io/PlackettLuce/) package.
+![logo-Archery Rating](logo-with-title.svg)
+
+Archery Rating aims to run a fairer archery ranking system alongside official
+rankings. This would be a supplement for those who enjoy numbers and statistics
+or archers wanting to assess their performance.
+
+It extracts recurve and compound event scores from [Ianseo](https://ianseo.net/)
+and builds a website containing the resulting ranks of all archers. The
+statistical analysis was written in *R*, using the
+[`PlackettLuce`](https://hturner.github.io/PlackettLuce/) package.
 
 The extraction of scores from Ianseo was done using
-[IanseoParse](https://github.com/Alcalol/IanseoParse). This was written in
+[`IanseoParse`](https://github.com/Alcalol/IanseoParse). This was written in
 *Java* and is a submodule of this repository.
 
 Contribution, using or forking this repository is welcomed. I work on this in my
@@ -17,7 +23,50 @@ any forthcoming publications where appropriate.
 
 ## [Main Website](https://shermanlo77.github.io/archeryratingweb/)
 
-## How to Use (Linux Recommended)
+Archery Rating is deployed on
+[GitHub pages](https://shermanlo77.github.io/archeryratingweb/)
+
+## How to Run the World Archery 2019 Example
+
+The following *R* packages are required:
+
+- `PlackettLuce`
+- `readr`
+- `stringi`
+- `foreach`
+- `doParallel`
+- `tableHTML`
+- `foreach`
+
+Run the script `example.R`. You may provide an additional argument which
+specifies where the website, containing results, is saved locally.
+
+```shell
+Rscript example.R <location to save results>
+```
+
+### Using Apptainer
+
+For those familiar with Apptainer, a definition file `example.def` is provided.
+This allows a user to build a container and install all of the required
+prerequisites for you.
+
+Build from the definition file using
+
+```shell
+apptainer build example.sif example.def
+```
+
+and run it using
+
+```shell
+apptainer run example.sif <location to save results>
+```
+
+It is recommended that `<location to save results>` is somewhere in your home
+directory.
+
+## How to Use IanseoParse and Further Examples
 
 - Compile the *Java* code using *Maven*, for example using
 
@@ -26,7 +75,8 @@ mvn -f IanseoParse package
 ```
 
 - Extract Ianseo scores and save them as `.csv` files. See
-[IanseoParse](https://github.com/Alcalol/IanseoParse) for further information.
+  [IanseoParse](https://github.com/Alcalol/IanseoParse) for further information.
+
 The following examples are provided:
 
 ```Shell
@@ -42,11 +92,11 @@ java -jar IanseoParse/target/IanseoParse-x.x.x.jar -t uk_2021.txt
 to extract UK events for 2021.
 
 - For the above example, run the scripts `uk_2019.R` and `uk_2021.R` to build
-the respective websites. This is computationally intensive, especially if there
-are ties. Multiple threads and at least 16 GB of RAM is recommended.
-
-- To build a website using other events, see the procedure `archeryRatingHtml()`
-in `archeryrating.R`.
+  the respective websites. This is computationally intensive, especially if
+  there are ties. Multiple threads and at least 16 GB of RAM is recommended.
+- With these examples provided, one should be able to use events outside the
+  examples provided, see the procedure `archery_rating_html()` in
+  `archeryrating.R`.
 
 ## More Information
 
@@ -98,31 +148,35 @@ tuned to the game/sport used.
 
 ## References and Acknowledgement
 
-- [Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I., 2020. Modelling rankings in R: The PlackettLuce package. *Computational Statistics*, pp.1-31.](https://link.springer.com/article/10.1007/s00180-020-00959-3)
+- [Turner, H.L., van Etten, J., Firth, D. and Kosmidis, I., 2020. Modelling
+  rankings in R: The PlackettLuce package. *Computational Statistics*,
+  pp.1-31.](https://link.springer.com/article/10.1007/s00180-020-00959-3)
 - The results were extracted from [Ianseo](https://www.ianseo.net) with the help
-from Tony Sze using [IanseoParse](https://github.com/Alcalol/IanseoParse).
+  from Tony Sze using [IanseoParse](https://github.com/Alcalol/IanseoParse).
 - Helpful discussions with students and academic staff at the University of
-Warwick.
+  Warwick.
 
-## Issues
+## Issues and Notes
 
-- Variation on names including typos, for example Chris and Christopher, are
-treated as different people. For the WA example, the names are cleaned in
-`cleannames.R`. Otherwise, it is a matter of data cleaning.
+- A variation of names including typos, for example, Chris and Christopher, are
+  treated as different people. For the WA example, the names are cleaned in
+  `cleannames.R`. Otherwise, it is a matter of data cleaning.
 - Two different people with the same name may have their results merged, causing
-unexpected results.
+  unexpected results.
+- It should be noted that for archers who changed club/county during the season,
+  the first club/county they represent is used and presented throughout the
+  season.
 - There are issues with scaling to WA events, eg lots of ties in qualification
-will make the computation harder. The WA 2019 example is still in development.
+  will make the computation harder.
 
 ## Potential Further Development
 
-- Use of JavaScript technology for the website
-- A move away from *R* and use the source code of PlackettLuce directly and more
-efficiently
+- Use of PHP and JavaScript technology for the website
+- A move away from *R* for more efficient programming?
 
 ## Licenses and Other Information
 
 - Copyright (c) 2019-2020 Sherman Lo. See `LICENSE` for further information.
 - GPL-3.0 License (it should be noted that the
-[PlackettLuce](https://hturner.github.io/PlackettLuce/) package uses the GPL-3.0
-License too).
+  [PlackettLuce](https://hturner.github.io/PlackettLuce/) package uses the
+  GPL-3.0 License too).

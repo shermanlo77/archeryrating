@@ -15,4 +15,7 @@ event_array <- c(
   4797,
   4803
 )
-archery_rating_html(event_array, event_array, html_path, "2019 World Cup")
+archery_rating_html(
+  event_array, event_array, html_path,
+  "Hyundai Archery World Cup 2019"
+)
