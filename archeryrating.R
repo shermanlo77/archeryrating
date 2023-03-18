@@ -75,11 +75,6 @@ archery_rating_html <- function(recurve_event_array,
   event_array_matrix <- matrix(nrow = 0, ncol = 3)
   colnames(event_array_matrix) <- c("Event", "Format", "Categories")
 
-  # list of plackett_luce and rank matrices
-  # dim 1: for each category
-  # dim 2: category_bowtype_code, rank_matrix, plackett_luce
-  plackett_luce_array <- list()
-
   for (bowtype in c("Recurve", "Compound", "Barebow")) {
     for (category in c("Men", "Women")) {
 
@@ -198,12 +193,12 @@ archery_rating_html <- function(recurve_event_array,
           )
 
           # append points after event and gained at event to the results table
-          kable <- event_summary[[2]]
+          table_results <- event_summary[[2]]
 
           # add the name of the event and the summary table to event_array
           event_array[[length(event_array) + 1]] <- list(
             event,
-            kable,
+            table_results,
             NULL # to contain rating points later on
           )
           # add the event_number and is_qualification to
@@ -214,22 +209,22 @@ archery_rating_html <- function(recurve_event_array,
           )
 
           # save the country for each archer to country_array
-          for (i_archer in seq_len(nrow(kable))) {
-            archer <- kable$Name[i_archer]
+          for (i_archer in seq_len(nrow(table_results))) {
+            archer <- table_results$Name[i_archer]
             if (length(country_array) == 0) {
               country_array <- c(
                 country_array,
-                toString(kable[i_archer, "Country"])
+                toString(table_results[i_archer, "Country"])
               )
               names(country_array)[length(country_array)] <-
-                kable$Name[i_archer]
+                table_results$Name[i_archer]
             } else if (!is.element(archer, names(country_array))) {
               country_array <- c(
                 country_array,
-                toString(kable[i_archer, "Country"])
+                toString(table_results[i_archer, "Country"])
               )
               names(country_array)[length(country_array)] <-
-                kable$Name[i_archer]
+                table_results$Name[i_archer]
             }
           }
 
@@ -328,20 +323,20 @@ archery_rating_html <- function(recurve_event_array,
         event_array[[i_event]][[3]] <- sort(points, decreasing = TRUE)
 
         # append points after event and gained at event to the results table
-        kable <- event_array[[i_event]][[2]]
-        kable <- cbind(
-          kable, round(points_after[kable$Name]),
-          round(points_diff[kable$Name])
+        table_event <- event_array[[i_event]][[2]]
+        table_event <- cbind(
+          table_event, round(points_after[table_event$Name]),
+          round(points_diff[table_event$Name])
         )
         # label columns of the table
         if (is_qualification) {
-          colnames(kable)[5] <- "10+X"
-          colnames(kable)[6] <- "X"
+          colnames(table_event)[5] <- "10+X"
+          colnames(table_event)[6] <- "X"
         }
-        colnames(kable)[ncol(kable) - 1] <- "Points after event"
-        colnames(kable)[ncol(kable)] <- "Points earned at event"
-        rownames(kable) <- NULL
-        event_array[[i_event]][[2]] <- kable
+        colnames(table_event)[ncol(table_event) - 1] <- "Points after event"
+        colnames(table_event)[ncol(table_event)] <- "Points earned at event"
+        rownames(table_event) <- NULL
+        event_array[[i_event]][[2]] <- table_event
 
         # construct the table
         if (is_qualification) {
@@ -356,21 +351,15 @@ archery_rating_html <- function(recurve_event_array,
         output_file <- file.path(
           html_path, as.character(event_number), output_file
         )
-        kable <- event_array[[i_event]][[2]]
-        kable$Name <- convert_name_to_html(
-          kable$Name, paste0("../", category_bowtype_code, "/")
+        table_event <- event_array[[i_event]][[2]]
+        table_event$Name <- convert_name_to_html(
+          table_event$Name, paste0("../", category_bowtype_code, "/")
         )
         render_event(
-          event, event_number, category_bowtype, format, kable,
+          event, event_number, category_bowtype, format, table_event,
           output_file, footer_notes
         )
       }
-
-      # save the rank matrix and plackett_luce model
-      plackett_luce_array[[length(plackett_luce_array) + 1]] <- list(
-        category_bowtype_code, rank_matrix,
-        plackett_luce_for_each_event[[length(plackett_luce_for_each_event)]]
-      )
 
       # for the final plackett_luce model, work out the quasi standard error
       quasi_error <- tryCatch(
@@ -395,21 +384,21 @@ archery_rating_html <- function(recurve_event_array,
 
       # sort the points and construct a table showing all archers' points
       points <- sort(points, decreasing = TRUE)
-      kable <- matrix(nrow = length(points), ncol = 5)
-      kable[, 1] <- seq_len(length(points))
-      kable[, 2] <- names(points)
-      kable[, 3] <- country_array[names(points)]
-      kable[, 4] <- round(points)
-      kable[, 5] <- paste0("&plusmn;", quasi_error[names(points)])
-      kable[, 2] <- convert_name_to_html(
-        kable[, 2], paste0(category_bowtype_code, "/")
+      table_rank <- matrix(nrow = length(points), ncol = 5)
+      table_rank[, 1] <- seq_len(length(points))
+      table_rank[, 2] <- names(points)
+      table_rank[, 3] <- country_array[names(points)]
+      table_rank[, 4] <- round(points)
+      table_rank[, 5] <- paste0("&plusmn;", quasi_error[names(points)])
+      table_rank[, 2] <- convert_name_to_html(
+        table_rank[, 2], paste0(category_bowtype_code, "/")
       )
-      colnames(kable) <- c(
+      colnames(table_rank) <- c(
         "Rank", "Name", "Country",
         "Points", "Uncertainty"
       )
       render_rank(
-        category_bowtype, kable,
+        category_bowtype, table_rank,
         file.path(html_path, paste0(category_bowtype_code, ".html")),
         footer_notes
       )
@@ -435,7 +424,7 @@ archery_rating_html <- function(recurve_event_array,
         )
 
         # table of all events attended
-        kable <- matrix(nrow = nrow(event_number_array), ncol = 6)
+        event_table <- matrix(nrow = nrow(event_number_array), ncol = 6)
 
         # for each event
         for (i_event in seq_len(nrow(event_number_array))) {
@@ -472,7 +461,7 @@ archery_rating_html <- function(recurve_event_array,
           # take the first instance
           # ways to improve: output a warning, warn the user the data or names
           # need to be cleaned
-          kable[nrow(event_number_array) - i_event + 1, ] <- c(
+          event_table[nrow(event_number_array) - i_event + 1, ] <- c(
             individual_result$Rank[1], event_name,
             event_format,
             individual_result$`Points after event`[1],
@@ -500,7 +489,7 @@ archery_rating_html <- function(recurve_event_array,
         colnames(archer_rank_matrix) <- colnames(rank_matrix[[1]])
         # work out the number of pairs
         n_pair <- sum(archer_rank_matrix > 0) - nrow(archer_rank_matrix)
-        kable2 <- matrix(nrow = n_pair, ncol = 7)
+        pairwise_table <- matrix(nrow = n_pair, ncol = 7)
         i_pair <- 1
         # each event
         for (i_event in seq_len(nrow(archer_rank_matrix))) {
@@ -553,8 +542,8 @@ archery_rating_html <- function(recurve_event_array,
                 archer_points,
                 opponent_points
               ))
-              # put results in kable2
-              kable2[n_pair - i_pair + 1, ] <- c(
+              # put results in pairwise_table
+              pairwise_table[n_pair - i_pair + 1, ] <- c(
                 event_name, event_format, vs_name, country_array[vs_name],
                 round(opponent_points), prob_win, result
               )
@@ -564,22 +553,22 @@ archery_rating_html <- function(recurve_event_array,
         }
 
         # label columns of the table
-        colnames(kable) <- c(
+        colnames(event_table) <- c(
           "Rank", "Event", "Format",
           "Points after event", "Points earned at event",
           "Rating rank after event"
         )
-        colnames(kable2) <- c(
+        colnames(pairwise_table) <- c(
           "Event", "Format", "VS", "Country",
           "Opponent's points now", "Estimated probability of win", "Result"
         )
 
-        # add links to kable
-        kable[, 2] <- convert_event_to_html(
-          kable[, 2], category_bowtype_code,
+        # add links to event_table
+        event_table[, 2] <- convert_event_to_html(
+          event_table[, 2], category_bowtype_code,
           matrix(apply(event_number_array, 2, rev), ncol = 2), "../"
         )
-        kable2[, 3] <- convert_name_to_html(kable2[, 3], "")
+        pairwise_table[, 3] <- convert_name_to_html(pairwise_table[, 3], "")
 
         output_file <- name_to_html(archer)
         output_file <- file.path(
@@ -588,7 +577,7 @@ archery_rating_html <- function(recurve_event_array,
         )
         render_individual(
           archer, country, category_bowtype, archer_rank, round(archer_points),
-          kable, kable2, output_file, footer_notes
+          event_table, pairwise_table, output_file, footer_notes
         )
       }
     }
