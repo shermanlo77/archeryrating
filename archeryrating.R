@@ -169,6 +169,7 @@ render_bowtype_category <- function(homepage_vars, html_path, title, bowtype,
   )
 
   # for each event, fit plackett luce
+  cat(paste("Fitting", category_bowtype, "...\n"))
   plackett_luce_for_each_event <- fit_online_plackett_luce(ranks_and_events)
 
 
