@@ -38,11 +38,12 @@ The following *R* packages are required:
 - `tableHTML`
 - `foreach`
 
-Run the script `example.R`. You may provide an additional argument which
-specifies where the website, containing results, is saved locally.
+Run the script `example.R`. You may provide an optional additional argument
+which specifies where the website, containing results, is saved locally and
+the number of threads use.
 
 ```shell
-Rscript example.R <location to save results>
+Rscript example.R <location to save results> <number of threads>
 ```
 
 ### Using Apptainer
@@ -60,7 +61,7 @@ apptainer build example.sif example.def
 and run it using
 
 ```shell
-apptainer run example.sif <location to save results>
+apptainer run example.sif <location to save results> <number of threads>
 ```
 
 It is recommended that `<location to save results>` is somewhere in your home

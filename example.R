@@ -2,6 +2,7 @@ source("archeryrating.R")
 
 args <- commandArgs(TRUE)
 html_path <- args[1]
+n_thread <- args[2]
 if (is.na(html_path)) {
   html_path <- "example"
 }
@@ -15,7 +16,16 @@ event_array <- c(
   4797,
   4803
 )
-archery_rating_html(
-  event_array, event_array, html_path,
-  "Hyundai Archery World Cup 2019"
-)
+
+if (is.na(n_thread)) {
+  archery_rating_html(
+    event_array, event_array, html_path,
+    "Hyundai Archery World Cup 2019"
+  )
+} else {
+  archery_rating_html(
+    event_array, event_array, html_path,
+    "Hyundai Archery World Cup 2019",
+    n_thread
+  )
+}

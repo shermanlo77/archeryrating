@@ -51,14 +51,17 @@ source("renderHtml.R")
 #     events
 #   barebow_women_event_array: optional, list of int for Ianseo women's barebow
 #     events
+#   n_thread: optional, number of threads to use, by default, all threads
+#     detected are used
 archery_rating_html <- function(recurve_event_array,
                                 compound_event_array,
                                 html_path,
                                 title,
                                 footer_notes = NULL,
                                 barebow_men_event_array = NULL,
-                                barebow_women_event_array = NULL) {
-  registerDoParallel(detectCores())
+                                barebow_women_event_array = NULL,
+                                n_thread = detectCores()) {
+  registerDoParallel(n_thread)
 
   # list of links for each category
   # eg "RM.html", "RW.html", "CM.html", "CW.html"
