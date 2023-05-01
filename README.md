@@ -21,6 +21,9 @@ please find my contact details on my
 [GitHub profile](https://github.com/shermanlo77). Please see `LICENSE` and cite
 any forthcoming publications where appropriate.
 
+- Lo, S. (2023). Calling the shots: using a statistical model to rank archers.
+  *Significance, 20(2)*, pp.33-35. <https://doi.org/10.1093/jrssig/qmad030>
+
 ## [Main Website](https://shermanlo77.github.io/archeryratingweb/)
 
 Archery Rating is deployed on
@@ -69,6 +72,10 @@ directory.
 
 ## How to Use IanseoParse and Further Examples
 
+`IanseoParse` is a submodule and should be pulled accordingly, for example,
+using `git clone --recurse-submodules <repository>` or
+`git submodule update --init`
+
 - Compile the *Java* code using *Maven*, for example using
 
 ```Shell
@@ -110,9 +117,11 @@ The points are updated to reflect the statistical property of each archer. More
 specifically, it estimates the probability that you will beat an archer in a
 format where it is either matchplay or a WA 720 chosen at random. The formula
 for the probability that archer A beats archer B is
+
 $$
 P(\text{A beats B}) = \dfrac{1}{1+10^{(R_B-R_A)/400}}
 $$
+
 where $R_A$ and $R_B$ are the points for archer A and archer B respectively.
 
 This has numerous advantages over previous ranking systems. Score based ranking

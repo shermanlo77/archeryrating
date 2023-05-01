@@ -1,3 +1,3 @@
 [submodule "IanseoParse"]
 	path = IanseoParse
-	url = git@github.com:Alcalol/IanseoParse.git
+	url = https://github.com/Alcalol/IanseoParse.git
